@@ -1,0 +1,16 @@
+.gradle/
+.gradle-cache/
+build/
+run/
+run-data/
+logs/
+mcmodsrepo/
+.idea/
+.vscode/
+.settings/
+.classpath
+.project
+bin/
+out/
+*.iml
+*.log

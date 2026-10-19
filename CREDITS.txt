@@ -1,0 +1,29 @@
+Mod Hub — Créditos
+
+Proyecto y autor declarado: pangod512.
+Diseño funcional, decisiones de interfaz y pruebas en el modpack: pangod512.
+
+Minecraft Java Edition — Mojang Studios / Microsoft.
+Juego sobre el que funciona este mod. Mod Hub no es un producto oficial de
+Mojang Studios ni de Microsoft.
+
+Minecraft Forge y Forge Mod Loader — equipo y colaboradores de Minecraft Forge.
+Plataforma y MDK utilizados para desarrollar y ejecutar el mod. Los créditos
+y la licencia originales incluidos en el MDK se conservan sin modificar en:
+third_party/forge-mdk/CREDITS.txt
+third_party/forge-mdk/LICENSE.txt
+
+Modrinth — equipo de Modrinth y autores de los proyectos consultados.
+Servicio público opcional utilizado para identificar archivos por su huella
+y obtener los datos publicados sobre compatibilidad. No implica patrocinio
+ni garantía de exactitud de cada clasificación.
+
+Mod Menu — equipo y colaboradores de Mod Menu.
+Inspiración visual inicial. Mod Hub no es un port y esta
+mención no atribuye a ese proyecto la autoría del código de Mod Hub.
+
+Los nombres, descripciones e iconos de los mods listados se leen de los mods
+instalados. Pertenecen a sus respectivos autores y no se incorporan como una
+colección de recursos propios al JAR de Mod Hub.
+
+Licencia del código propio: todos los derechos reservados; consultar LICENSE.txt.

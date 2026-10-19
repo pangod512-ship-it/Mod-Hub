@@ -1,0 +1,23 @@
+Mod Hub
+Copyright (c) 2026 pangod512. All rights reserved.
+
+This notice applies to the original Mod Hub code and project documentation.
+It does not claim ownership of Minecraft, Minecraft Forge, third-party mods,
+third-party notices, or other materials belonging to their respective owners.
+
+Permission is granted to download official, unmodified Mod Hub releases and
+install and run them for personal Minecraft gameplay, including private
+modpack use.
+
+No open-source license is granted. Except for the permission above, rights
+provided by applicable law, or permissions separately granted in writing by
+the rights holder, copying, modifying, redistributing, sublicensing, or selling
+Mod Hub code or binaries is not permitted. Redistribution in a publicly
+shared modpack requires prior written permission.
+
+Third-party materials remain governed by their own notices and licenses.
+The original notices supplied with the Forge MDK are preserved under
+third_party/forge-mdk/ and do not define the license of Mod Hub itself.
+
+The software is provided "as is", without warranties to the extent permitted
+by applicable law.

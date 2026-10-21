@@ -1,0 +1,86 @@
+// Optional packaged-jar checks use an isolated build and never compile Mod Hub sources.
+def smokeJarPath = providers.gradleProperty('uiSmokeJar').orNull
+def smokeJar = smokeJarPath == null ? null : file(smokeJarPath)
+if (smokeJar != null) {
+    if (!smokeJar.isFile() || !(smokeJar.name in ["modhub-${mod_version}.jar".toString(), "modhub-${mod_version}-mc${minecraft_version}-forge.jar".toString()])) {
+        throw new GradleException("uiSmokeJar debe apuntar al JAR ya compilado de Mod Hub ${mod_version} para ${minecraft_version}")
+    }
+    layout.buildDirectory.set(file("build/compatibility/${forge_version}"))
+    def smokeHash = java.security.MessageDigest.getInstance('SHA-256').digest(smokeJar.bytes).encodeHex().toString()
+    def smokeDependencyVersion = "${mod_version}-${smokeHash.substring(0, 12)}"
+    def smokeDependencyDirectory = file("build/compatibility-input/${smokeHash}")
+    copy {
+        from smokeJar
+        into smokeDependencyDirectory
+        rename { "modhub-${smokeDependencyVersion}.jar" }
+    }
+    sourceSets.main.java.setSrcDirs([])
+    sourceSets.main.resources.setSrcDirs([])
+    minecraft.runs.client.mods.removeAll { it.name == mod_id }
+    repositories {
+        flatDir {
+            name = 'smokeJar'
+            dirs smokeDependencyDirectory
+            content { includeGroup 'local.modhub.verification' }
+        }
+    }
+    dependencies {
+        implementation fg.deobf("local.modhub.verification:modhub:${smokeDependencyVersion}")
+    }
+}
+
+sourceSets {
+    fixture {}
+    smoke {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+    }
+}
+
+minecraft.runs.client {
+    property 'modhub.smoke.output', file(providers.gradleProperty('uiSmokeOutput')
+            .getOrElse("build/ui-smoke-${forge_version}")).absolutePath
+    property 'modhub.smoke.expectedForge', forge_version
+    property 'modhub.smoke.expectedVersion', mod_version
+    property 'modhub.smoke.persistence', providers.gradleProperty('uiSmokePersistence').getOrElse('none')
+    property 'modhub.smoke.vanilla', providers.gradleProperty('uiSmokeVanilla').getOrElse('false')
+    property 'modhub.smoke.realMods', providers.gradleProperty('uiSmokeRealModsDir').getOrElse('')
+    property 'modhub.smoke.vanillaLayout', providers.gradleProperty('uiSmokeVanillaLayout').getOrElse('false')
+    if (smokeJar != null) {
+        workingDirectory file("run/compatibility-${forge_version}")
+        property 'modhub.smoke.jar', smokeJar.absolutePath
+        property 'modhub.smoke.sha256', java.security.MessageDigest.getInstance('SHA-256')
+                .digest(smokeJar.bytes).encodeHex().toString()
+    }
+    property 'forge.logging.console.level', 'info'
+    args '--width', '1280', '--height', '720'
+    mods {
+        fixture_content {
+            source sourceSets.fixture
+        }
+        modhub_smoke {
+            source sourceSets.smoke
+        }
+    }
+}
+
+tasks.register('classificationChecks', JavaExec) {
+    jvmArgs '--add-opens=java.base/java.lang.invoke=ALL-UNNAMED'
+    dependsOn tasks.named('smokeClasses')
+    classpath = sourceSets.smoke.runtimeClasspath
+    mainClass = 'com.pangod512.modhub.smoke.ClassificationChecks'
+    args file('build/classification-checks').absolutePath
+    if (providers.gradleProperty('classificationModsDir').isPresent()) {
+        args file(providers.gradleProperty('classificationModsDir').get()).absolutePath
+    }
+}
+
+tasks.register('modrinthChecks', JavaExec) {
+    dependsOn tasks.named('smokeClasses')
+    classpath = sourceSets.smoke.runtimeClasspath
+    mainClass = 'com.pangod512.modhub.smoke.ModrinthChecks'
+    args file('build/modrinth-checks').absolutePath
+    if (providers.gradleProperty('modrinthModsDir').isPresent()) {
+        args file(providers.gradleProperty('modrinthModsDir').get()).absolutePath
+    }
+}

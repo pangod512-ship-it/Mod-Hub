@@ -1,0 +1,14 @@
+plugins { id 'java-library' }
+repositories { mavenCentral() }
+dependencies { compileOnly 'com.google.code.gson:gson:2.8.0'; testImplementation 'com.google.code.gson:gson:2.8.0' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.vendor = JvmVendorSpec.ADOPTIUM
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.register('coreChecks', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.pangod512.modhub.core.CoreChecks'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(8); vendor = JvmVendorSpec.ADOPTIUM }
+    args layout.buildDirectory.dir('checks').get().asFile.absolutePath
+}
+check.dependsOn coreChecks

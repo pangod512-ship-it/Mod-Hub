@@ -1,0 +1,14 @@
+[
+  {
+    "modid": "modhub",
+    "name": "Mod Hub",
+    "description": "Search, filter and inspect installed mods.",
+    "version": "1.1.0",
+    "mcversion": "1.12.2",
+    "authorList": [
+      "pangod512"
+    ],
+    "credits": "",
+    "url": "https://github.com/pangod512-ship-it/Mod-Hub"
+  }
+]

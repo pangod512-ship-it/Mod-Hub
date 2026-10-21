@@ -1,16 +1,35 @@
-.gradle/
-.gradle-cache/
-build/
-run/
-run-data/
-logs/
-mcmodsrepo/
-.idea/
-.vscode/
-.settings/
+# eclipse
+bin
+*.launch
+.settings
+.metadata
 .classpath
 .project
-bin/
-out/
+
+# idea
+out
+*.ipr
+*.iws
 *.iml
+.idea
+
+# gradle
+build
+.gradle
+.gradle-cache/
+
+# other
+eclipse
+run
+logs/
 *.log
+*.key
+.env
+.env.*
+
+# Files from Forge MDK
+forge*changelog.txt
+forge-*-mdk.zip
+build-verification.log
+accesstransform.log
+ui-verification.log

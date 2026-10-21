@@ -1,0 +1,22 @@
+modLoader="javafml"
+loaderVersion="[40,)"
+license="All Rights Reserved"
+[[mods]]
+modId="modhub"
+version="1.1.0"
+displayName="Mod Hub"
+authors="pangod512"
+description="Search, filter and inspect installed mods."
+displayTest="IGNORE_SERVER_VERSION"
+[[dependencies.modhub]]
+modId="forge"
+mandatory=true
+versionRange="[40.3.0,41)"
+ordering="NONE"
+side="CLIENT"
+[[dependencies.modhub]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.18.2]"
+ordering="NONE"
+side="CLIENT"

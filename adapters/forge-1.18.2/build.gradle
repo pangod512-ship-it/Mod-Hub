@@ -1,0 +1,33 @@
+buildscript {
+    repositories { maven { url = 'https://maven.minecraftforge.net/' }; mavenCentral() }
+    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:6.0.54' }
+}
+apply plugin: 'net.minecraftforge.gradle'
+version = '1.1.0'
+group = 'com.pangod512.modhub'
+archivesBaseName = 'modhub'
+sourceCompatibility = targetCompatibility = '17'
+repositories { mavenCentral() }
+minecraft {
+    mappings channel: 'official', version: '1.18.2'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'info'
+            mods { modhub { source sourceSets.main } }
+        }
+    }
+}
+dependencies { minecraft 'net.minecraftforge:forge:1.18.2-40.3.0' }
+sourceSets.main.java.srcDir('../../core/src/main/java')
+if (project.hasProperty('portProbe')) sourceSets.main.java.srcDir('src/probe/java')
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+jar {
+    exclude 'com/pangod512/modhub/probe/**'
+    archiveClassifier = 'mc1.18.2-forge'
+    from('../../LICENSE.txt')
+    from('../../CREDITS.txt')
+    from('../../third_party/forge-mdk') { into 'META-INF/third-party/forge-mdk' }
+    manifest { attributes 'Implementation-Version': project.version, 'Implementation-Vendor': 'pangod512' }
+    finalizedBy 'reobfJar'
+}

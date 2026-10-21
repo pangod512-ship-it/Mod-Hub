@@ -1,0 +1,65 @@
+buildscript {
+    repositories { maven { url = 'https://maven.minecraftforge.net/' }; mavenCentral() }
+    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:3.0.197' }
+}
+apply plugin: 'net.minecraftforge.gradle'
+version = '1.1.0'
+group = 'com.pangod512.modhub'
+archivesBaseName = 'modhub'
+sourceCompatibility = targetCompatibility = '1.8'
+repositories { mavenCentral() }
+minecraft {
+    mappings channel: 'snapshot', version: '20171003-1.12'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'info'
+        }
+    }
+}
+dependencies { minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2859' }
+// Forge 1.12's scanner cannot read module-info.class in ASM 6.x development dependencies.
+// This affects only the isolated development runtime; no ASM library is packaged in Mod Hub.
+configurations.all { resolutionStrategy.force 'org.ow2.asm:asm:5.2', 'org.ow2.asm:asm-tree:5.2', 'org.ow2.asm:asm-commons:5.2', 'org.ow2.asm:asm-analysis:5.2', 'org.ow2.asm:asm-util:5.2' }
+configurations { legacyOriginal }
+dependencies { legacyOriginal 'net.minecraftforge:forge:1.12.2-14.23.5.2859:universal@jar' }
+// ForgeGradle's binary-only remap may add a synthetic BUKKIT enum value.
+// Use the unchanged official Side.class only in the development launcher, never in the mod JAR.
+task prepareLegacyRuntime(type: Copy) {
+    from { zipTree(configurations.legacyOriginal.singleFile) }
+    include 'net/minecraftforge/fml/relauncher/Side.class'
+    into "$buildDir/legacy-runtime"
+}
+tasks.withType(JavaExec).all {
+    if(name == 'runClient') {
+        dependsOn prepareLegacyRuntime
+        doFirst { classpath = files("$buildDir/legacy-runtime") + classpath }
+    }
+}
+task prepareLegacySources {
+    doLast {
+        configurations.detachedConfiguration(dependencies.create('net.minecraftforge:forge:1.12.2-14.23.5.2859_mapped_snapshot_20171003-1.12:sources')).resolve()
+    }
+}
+sourceSets.main.java.srcDir('../../core/src/main/java')
+if (project.hasProperty('portProbe')) sourceSets.main.java.srcDir('src/probe/java')
+if (project.hasProperty('portProbe')) {
+    task portProbeJar(type: Jar) {
+        from sourceSets.main.output
+        include 'com/pangod512/modhub/probe/**'
+        classifier = 'mc1.12.2-private-probe'
+    }
+    reobf { portProbeJar {} }
+    portProbeJar.finalizedBy 'reobfPortProbeJar'
+}
+tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+jar {
+    exclude 'com/pangod512/modhub/probe/**'
+    classifier = 'mc1.12.2-forge'
+    from('../../LICENSE.txt')
+    from('../../CREDITS.txt')
+    from('../../third_party/forge-mdk') { into 'META-INF/third-party/forge-mdk' }
+    manifest { attributes 'Implementation-Version': project.version, 'Implementation-Vendor': 'pangod512' }
+    finalizedBy 'reobfJar'
+}
+

@@ -1,0 +1,9 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="All Rights Reserved"
+clientSideOnly=true
+[[mods]]
+modId="modhub_smoke"
+version="1.0"
+displayName="Pruebas de interfaz"
+description='''Comprobaciones de desarrollo. No se incluye en el mod distribuido.'''

@@ -2,10 +2,11 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '6.0.54'
 }
 
 version = mod_version
+layout.buildDirectory.set(file("build/multiversion/${minecraft_version}"))
 group = mod_group_id
 
 base {
@@ -167,6 +168,7 @@ tasks.named('processResources', ProcessResources).configure {
 
 // Example for how to get properties into the manifest for reading at runtime.
 tasks.named('jar', Jar).configure {
+    archiveClassifier = "mc${minecraft_version}-forge"
     from('LICENSE.txt')
     from('CREDITS.txt')
     from('third_party/forge-mdk') {
@@ -209,5 +211,13 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+// Compile the portable core into each standalone JAR. Packaged-JAR verification can disable this source set.
+sourceSets.main.java.srcDir("core/src/main/java")
+
+// Optional in-game UI checks; this source set is never included in the release jar.
+if (providers.gradleProperty('uiSmokeTest').isPresent()) {
+    apply from: 'gradle/ui-smoke.gradle'
 }
 

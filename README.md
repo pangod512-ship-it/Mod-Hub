@@ -22,9 +22,9 @@ La familia **1.1.0 está disponible como pre-releases de prueba**. Cada versión
 | 1.16.5 | 36.2.34 | 8 | Pre-release |
 | 1.18.2 | 40.3.0 | 17 | Pre-release |
 | 1.19.2 | 43.5.0 | 17 | Pre-release |
-| 1.20.1 | 47.4.10 | 17 | Pre-release |
+| 1.20.1 | 47.4.10 | 17 | Candidato pendiente; sin publicar |
 
-Las pruebas con modpacks de cada versión son necesarias antes de publicar sus candidatos. Fabric, NeoForge y Minecraft 1.21.1 no están incluidos.
+Las pruebas pendientes con lanzadores normales y modpacks se indican en cada pre-release; son necesarias antes de declarar estable cada port. Fabric, NeoForge y Minecraft 1.21.1 no están incluidos.
 
 
 ## Descargas por versión de Minecraft
@@ -35,7 +35,7 @@ Cada versión tiene sus propias releases y su JAR. Las pre-releases todavía est
 - **1.16.5:** [Mod Hub 1.1.0 - 1.16.5](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.16.5)
 - **1.18.2:** [Mod Hub 1.1.0 - 1.18.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.18.2)
 - **1.19.2:** [Mod Hub 1.1.0 - 1.19.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.19.2)
-- **1.20.1:** [Mod Hub 1.1.0 - 1.20.1](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.20.1)
+- **1.20.1:** la versión 1.1.0 todavía no está publicada; permanece disponible la estable 1.0.0.
 
 [Versión estable 1.0.0 para 1.20.1](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.0.0).
 

@@ -65,8 +65,7 @@ public final class IdentificationService {
                         () -> java.time.Instant.now().getEpochSecond(),
                         value -> snapshot = value);
                 ModrinthResolver.Snapshot primary = resolver.resolve(targets, settings::enabled);
-                // The CF transport remains absent until access and environment metadata are
-                // validated.
+                // CF stays disabled until access and environment metadata are validated.
                 Map<String, ModClassification> fallback = Collections.emptyMap();
                 if (CurseForgeAccess.available())
                   fallback =

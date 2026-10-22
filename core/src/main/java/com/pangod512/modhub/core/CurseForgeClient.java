@@ -96,10 +96,7 @@ public final class CurseForgeClient {
     return false;
   }
 
-  /**
-   * CurseForge's unsigned MurmurHash2, seed 1, ignoring ASCII whitespace. Two bounded-memory
-   * passes.
-   */
+  /** Unsigned MurmurHash2, seed 1; skips ASCII whitespace in two bounded-memory passes. */
   public static long fingerprint(Path file) throws IOException {
     int length = 0;
     try (InputStream in = new BufferedInputStream(Files.newInputStream(file))) {

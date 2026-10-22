@@ -160,7 +160,7 @@ public final class HubScreen extends GuiScreen {
           logos.put(id, texture);
         }
       } catch (IOException | RuntimeException ignored) {
-        /* Use a stable placeholder. */
+        /* An unreadable logo must not prevent the mod list from rendering. */
       }
     }
     if (texture != null) {

@@ -125,7 +125,7 @@ public final class ModrinthClient {
               try {
                 retry = Long.parseLong(connection.getHeaderField("X-Ratelimit-Reset"));
               } catch (NumberFormatException alsoIgnored) {
-                /* Default cooldown. */
+                /* Keep the 15-minute cooldown when rate-limit headers are missing or invalid. */
               }
             }
             String text = "";

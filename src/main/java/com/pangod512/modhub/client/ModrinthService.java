@@ -40,8 +40,7 @@ public final class ModrinthService {
       if (info.getModId().equals("modhub")) continue;
       try {
         ModSource source = ModSource.from(info);
-        // A project describes the entire package: do not assign its side to unrelated mods sharing
-        // one file.
+        // Do not apply a package's side to multiple mods sharing a JAR.
         if (info.getOwningFile() == null || info.getOwningFile().getMods().size() != 1) continue;
         Path file = source.path().orElse(null);
         if (source.kind() == ModSource.Kind.NESTED

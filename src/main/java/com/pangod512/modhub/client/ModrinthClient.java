@@ -39,7 +39,7 @@ public final class ModrinthClient {
                 try { retry = Long.parseLong(connection.getHeaderField("Retry-After")); }
                 catch (NumberFormatException ignored) {
                     try { retry = Long.parseLong(connection.getHeaderField("X-Ratelimit-Reset")); }
-                    catch (NumberFormatException alsoIgnored) { /* Default cooldown. */ }
+                    catch (NumberFormatException alsoIgnored) { /* Keep the 15-minute cooldown when rate-limit headers are missing or invalid. */ }
                 }
                 String text = "";
                 if (status == 200) {

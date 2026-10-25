@@ -1,6 +1,6 @@
 # Historial de cambios
 
-## 1.1.0 estable
+## 1.1.1 estable
 
 Disponible para Minecraft Forge 1.12.2, 1.16.5, 1.18.2, 1.19.2 y 1.20.1, con un JAR independiente para cada versión.
 

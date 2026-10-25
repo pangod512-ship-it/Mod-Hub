@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod(
     modid = "modhub",
     name = "Mod Hub",
-    version = "1.1.0",
+    version = "1.1.1",
     clientSideOnly = true,
     acceptableRemoteVersions = "*",
     guiFactory = "com.pangod512.modhub.forge112.ConfigFactory")
@@ -39,7 +39,7 @@ public final class ModHub {
     modsDirectory = config.toAbsolutePath().getParent().resolve("mods");
     overrides = new OverrideStore(config.resolve("modhub-overrides.json"));
     identification =
-        new IdentificationService(config, new CompatibilityContext("1.12.2", "forge"), "1.1.0");
+        new IdentificationService(config, new CompatibilityContext("1.12.2", "forge"), "1.1.1");
     for (net.minecraftforge.fml.common.discovery.ASMDataTable.ASMData annotation :
         event.getAsmData().getAll("net.minecraftforge.fml.common.Mod")) {
       Map<String, Object> data = annotation.getAnnotationInfo();

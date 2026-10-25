@@ -3,7 +3,7 @@ loaderVersion="[40,)"
 license="All Rights Reserved"
 [[mods]]
 modId="modhub"
-version="1.1.0"
+version="1.1.1"
 displayName="Mod Hub"
 authors="pangod512"
 description="Search, filter and inspect installed mods."

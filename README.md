@@ -14,7 +14,7 @@ Autor: **pangod512**. Licencia: **Todos los derechos reservados**; consultar [LI
 
 La versión pública **1.0.0** para Minecraft 1.20.1 permanece disponible en [GitHub Releases](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.0.0).
 
-La familia **1.1.0 está disponible como releases estables** para cinco versiones de Minecraft. Cada versión utiliza su propio JAR; no son intercambiables.
+La familia **1.1.1 está disponible como releases estables** para cinco versiones de Minecraft. Cada versión utiliza su propio JAR; no son intercambiables.
 
 | Minecraft | Forge de compilación | Java para jugar | Estado |
 |---|---|---|---|
@@ -31,11 +31,11 @@ Los cinco JAR se probaron en modpacks antes de esta publicación. Fabric, NeoFor
 
 Cada versión tiene su release estable y su JAR. Las pre-releases anteriores se conservan como historial.
 
-- **1.12.2:** [Mod Hub 1.1.0 - 1.12.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.12.2-stable)
-- **1.16.5:** [Mod Hub 1.1.0 - 1.16.5](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.16.5-stable)
-- **1.18.2:** [Mod Hub 1.1.0 - 1.18.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.18.2-stable)
-- **1.19.2:** [Mod Hub 1.1.0 - 1.19.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.19.2-stable)
-- **1.20.1:** [Mod Hub 1.1.0 - 1.20.1](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.20.1-stable)
+- **1.12.2:** [Mod Hub 1.1.1 - 1.12.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.1-mc1.12.2-stable)
+- **1.16.5:** [Mod Hub 1.1.1 - 1.16.5](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.1-mc1.16.5-stable)
+- **1.18.2:** [Mod Hub 1.1.1 - 1.18.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.1-mc1.18.2-stable)
+- **1.19.2:** [Mod Hub 1.1.1 - 1.19.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.1-mc1.19.2-stable)
+- **1.20.1:** [Mod Hub 1.1.1 - 1.20.1](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.1-mc1.20.1-stable)
 
 [Versión estable 1.0.0 para 1.20.1](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.0.0).
 

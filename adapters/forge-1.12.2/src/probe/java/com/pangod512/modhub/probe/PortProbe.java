@@ -114,15 +114,15 @@ public final class PortProbe {
         store.setAccessible(true);
         com.pangod512.modhub.core.OverrideStore overrides =
             (com.pangod512.modhub.core.OverrideStore) store.get(null);
-        overrides.save("modhub", "1.1.0", com.pangod512.modhub.core.ModType.SERVER);
+        overrides.save("modhub", "1.1.1", com.pangod512.modhub.core.ModType.SERVER);
         check(
             new com.pangod512.modhub.core.OverrideStore(Paths.get("config/modhub-overrides.json"))
                     .apply(
-                        "modhub", "1.1.0", com.pangod512.modhub.core.ModClassification.unknown(""))
+                        "modhub", "1.1.1", com.pangod512.modhub.core.ModClassification.unknown(""))
                     .type()
                 == com.pangod512.modhub.core.ModType.SERVER,
             "Persistencia de corrección");
-        overrides.save("modhub", "1.1.0", null);
+        overrides.save("modhub", "1.1.1", null);
         mc.displayGuiScreen(parent);
         check(mc.currentScreen == parent, "Volver conserva pantalla anterior");
         finish(mc, null);

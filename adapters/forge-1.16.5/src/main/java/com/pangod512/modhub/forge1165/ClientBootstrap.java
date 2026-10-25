@@ -37,7 +37,7 @@ public final class ClientBootstrap {
   static void start() {
     identification =
         new IdentificationService(
-            FMLPaths.CONFIGDIR.get(), new CompatibilityContext("1.16.5", "forge"), "1.1.0");
+            FMLPaths.CONFIGDIR.get(), new CompatibilityContext("1.16.5", "forge"), "1.1.1");
     overrides = new OverrideStore(FMLPaths.CONFIGDIR.get().resolve("modhub-overrides.json"));
     List<ModrinthResolver.Target> targets = new ArrayList<>();
     for (IModInfo mod : ModList.get().getMods()) {

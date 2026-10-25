@@ -4,6 +4,7 @@ public final class ModClassification {
   private final ModType type;
   private final Origin origin;
   private final String reason;
+  private final boolean singleplayerOnly;
 
   @Override
   public boolean equals(Object value) {
@@ -12,18 +13,28 @@ public final class ModClassification {
     ModClassification other = (ModClassification) value;
     return java.util.Objects.equals(this.type, other.type)
         && java.util.Objects.equals(this.origin, other.origin)
-        && java.util.Objects.equals(this.reason, other.reason);
+        && java.util.Objects.equals(this.reason, other.reason)
+        && this.singleplayerOnly == other.singleplayerOnly;
   }
 
   @Override
   public int hashCode() {
-    return java.util.Objects.hash(type, origin, reason);
+    return java.util.Objects.hash(type, origin, reason, singleplayerOnly);
   }
 
   public ModClassification(ModType type, Origin origin, String reason) {
+    this(type, origin, reason, false);
+  }
+
+  ModClassification(ModType type, Origin origin, String reason, boolean singleplayerOnly) {
     this.type = type;
     this.origin = origin;
     this.reason = reason;
+    this.singleplayerOnly = singleplayerOnly;
+  }
+
+  public boolean singleplayerOnly() {
+    return singleplayerOnly;
   }
 
   public ModType type() {

@@ -24,7 +24,7 @@ final class ModLogos implements AutoCloseable {
     if (mod.getLogoFile().isEmpty() || mod.getOwningFile() == null) return Optional.empty();
     try (InputStream stream =
         Files.newInputStream(mod.getOwningFile().getFile().findResource(mod.getLogoFile().get()))) {
-      NativeImage image = NativeImage.read(stream);
+      NativeImage image = NativeImage.read(new java.io.ByteArrayInputStream(LogoData.read(stream)));
       DynamicTexture texture = new DynamicTexture(image);
       texture.setFilter(mod.getLogoBlur(), false);
       ResourceLocation id =

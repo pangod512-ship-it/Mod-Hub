@@ -93,6 +93,21 @@ public final class CoreChecks {
         ClassificationPolicy.resolve(estimate, null, null) == estimate,
         "Sin conexión conserva estimación");
     check(
+        ModrinthClient.combine(estimate, ModClassification.unknown("Sin entorno publicado"))
+            == estimate,
+        "Archivo reconocido sin tipo no borra la estimación local en 1.20.1");
+    check(
+        ModrinthClient.combine(estimate, mr) == mr,
+        "Tipo remoto conocido reemplaza la estimación local en 1.20.1");
+    ModClassification singleplayer = ModrinthClient.classification(
+        new ModrinthCache.Entry("project1", "version1", "singleplayer_only", true, 1000));
+    check(ModrinthClient.combine(estimate, singleplayer) == singleplayer,
+        "Restricción explícita a un jugador no se convierte en Ambos");
+    check(ClassificationPolicy.resolve(estimate, singleplayer, cf) == singleplayer,
+        "Los ports respetan la restricción a un jugador antes de estimaciones y respaldo");
+    check(!ClassificationPolicy.needsFallback(singleplayer),
+        "Restricción explícita a un jugador no pide un tipo contradictorio al respaldo");
+    check(
         !CurseForgeAccess.available(),
         "Sin contrato autorizado CurseForge no se anuncia disponible");
     Path overridesPath = root.resolve("overrides.json");
@@ -267,11 +282,69 @@ public final class CoreChecks {
             .get(hash)
             .found(),
         "MR rechaza versión distinta");
+    Path damagedConfig = root.resolve("cf-damaged-entry");
+    JsonObject damagedRoot = new JsonObject(), damagedEntries = new JsonObject();
+    JsonObject damagedEntry = new JsonObject();
+    damagedEntry.addProperty("checkedAt", 1000);
+    damagedEntry.addProperty("type", "INVALID");
+    damagedEntries.add(ModrinthResolver.fingerprint(sample), damagedEntry);
+    damagedRoot.addProperty("provider", "curseforge");
+    damagedRoot.addProperty("context", CTX.cacheKey());
+    damagedRoot.addProperty("retryAfter", 0);
+    damagedRoot.add("entries", damagedEntries);
+    ModrinthCache.writeJson(
+        damagedConfig.resolve("modhub-curseforge-cache-" + CTX.cacheKey() + ".json"), damagedRoot);
+    calls.set(0);
+    Map<String, ModClassification> recovered =
+        new CurseForgeFallback(client(body(file(sample, "1.12.2", "Forge", "Client")), calls),
+            damagedConfig, CTX).resolve(targets, Collections.emptyMap(), true, 1001);
+    check(
+        calls.get() == 1 && recovered.get("sample") != null
+            && recovered.get("sample").type() == ModType.CLIENT,
+        "Entrada CF dañada vuelve a consultarse en lugar de bloquear ese archivo");
+    damagedRoot.remove("entries");
+    ModrinthCache.writeJson(
+        damagedConfig.resolve("modhub-curseforge-cache-" + CTX.cacheKey() + ".json"), damagedRoot);
+    recovered = new CurseForgeFallback(
+        client(body(file(sample, "1.12.2", "Forge", "Client")), calls), damagedConfig, CTX)
+        .resolve(targets, Collections.emptyMap(), true, 1002);
+    check(calls.get() == 2 && recovered.get("sample").type() == ModType.CLIENT,
+        "Caché CF sin tabla de entradas se reconstruye");
+    logoChecks();
     Files.write(
         root.resolve("results.txt"),
         (checks + " checks passed on " + System.getProperty("java.version"))
             .getBytes(StandardCharsets.UTF_8));
     System.out.println(
         "CORE_CHECKS_PASSED: " + checks + "; Java " + System.getProperty("java.version"));
+  }
+
+  private static void logoChecks() throws Exception {
+    java.awt.image.BufferedImage logo = new java.awt.image.BufferedImage(
+        16, 8, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+    logo.setRGB(0, 0, 0xff123456);
+    ByteArrayOutputStream png = new ByteArrayOutputStream();
+    javax.imageio.ImageIO.write(logo, "png", png);
+    java.awt.image.BufferedImage decoded = javax.imageio.ImageIO.read(
+        new ByteArrayInputStream(LogoData.read(new ByteArrayInputStream(png.toByteArray()))));
+    check(decoded.getWidth() == 128 && decoded.getHeight() == 128,
+        "Icono de un recurso virtual se limita antes de crear la textura nativa");
+    check(decoded.getRGB(0, 0) == 0 && decoded.getRGB(0, 32) != 0,
+        "Icono rectangular conserva proporción y transparencia");
+    png.reset();
+    javax.imageio.ImageIO.write(new java.awt.image.BufferedImage(
+        2049, 1, java.awt.image.BufferedImage.TYPE_INT_ARGB), "png", png);
+    try {
+      LogoData.read(new ByteArrayInputStream(png.toByteArray()));
+      throw new AssertionError("Icono con dimensiones excesivas");
+    } catch (IOException expected) { checks++; }
+    try {
+      LogoData.read(new ByteArrayInputStream(new byte[4194305]));
+      throw new AssertionError("Icono con tamaño excesivo");
+    } catch (IOException expected) { checks++; }
+    try {
+      LogoData.read(new ByteArrayInputStream(new byte[] {1, 2, 3}));
+      throw new AssertionError("Icono con formato inválido");
+    } catch (IOException expected) { checks++; }
   }
 }

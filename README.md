@@ -14,30 +14,32 @@ Autor: **pangod512**. Licencia: **Todos los derechos reservados**; consultar [LI
 
 La versión pública **1.0.0** para Minecraft 1.20.1 permanece disponible en [GitHub Releases](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.0.0).
 
-La familia **1.1.0 está disponible como pre-releases de prueba**. Cada versión de Minecraft utiliza su propio JAR; no son intercambiables.
+La familia **1.1.0 está disponible como releases estables** para cinco versiones de Minecraft. Cada versión utiliza su propio JAR; no son intercambiables.
 
 | Minecraft | Forge de compilación | Java para jugar | Estado |
 |---|---|---|---|
-| 1.12.2 | 14.23.5.2859 | 8 | Pre-release |
-| 1.16.5 | 36.2.34 | 8 | Pre-release |
-| 1.18.2 | 40.3.0 | 17 | Pre-release |
-| 1.19.2 | 43.5.0 | 17 | Pre-release |
-| 1.20.1 | 47.4.10 | 17 | Candidato pendiente; sin publicar |
+| 1.12.2 | 14.23.5.2859 | 8 | Estable |
+| 1.16.5 | 36.2.34 | 8 | Estable |
+| 1.18.2 | 40.3.0 | 17 | Estable |
+| 1.19.2 | 43.5.0 | 17 | Estable |
+| 1.20.1 | 47.4.10 | 17 | Estable |
 
-Las pruebas pendientes con lanzadores normales y modpacks se indican en cada pre-release; son necesarias antes de declarar estable cada port. Fabric, NeoForge y Minecraft 1.21.1 no están incluidos.
+Los cinco JAR se probaron en modpacks antes de esta publicación. Fabric, NeoForge y Minecraft 1.21.1 no están incluidos.
 
 
 ## Descargas por versión de Minecraft
 
-Cada versión tiene sus propias releases y su JAR. Las pre-releases todavía están en validación.
+Cada versión tiene su release estable y su JAR. Las pre-releases anteriores se conservan como historial.
 
-- **1.12.2:** [Mod Hub 1.1.0 - 1.12.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.12.2)
-- **1.16.5:** [Mod Hub 1.1.0 - 1.16.5](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.16.5)
-- **1.18.2:** [Mod Hub 1.1.0 - 1.18.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.18.2)
-- **1.19.2:** [Mod Hub 1.1.0 - 1.19.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.19.2)
-- **1.20.1:** la versión 1.1.0 todavía no está publicada; permanece disponible la estable 1.0.0.
+- **1.12.2:** [Mod Hub 1.1.0 - 1.12.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.12.2-stable)
+- **1.16.5:** [Mod Hub 1.1.0 - 1.16.5](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.16.5-stable)
+- **1.18.2:** [Mod Hub 1.1.0 - 1.18.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.18.2-stable)
+- **1.19.2:** [Mod Hub 1.1.0 - 1.19.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.19.2-stable)
+- **1.20.1:** [Mod Hub 1.1.0 - 1.20.1](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.0-mc1.20.1-stable)
 
 [Versión estable 1.0.0 para 1.20.1](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.0.0).
+
+Consulta las correcciones y los cambios de organización del código en [CHANGELOG.md](CHANGELOG.md).
 
 ## Instalar
 
@@ -55,7 +57,7 @@ Modrinth viene activado de forma predeterminada. Puedes desactivarlo en la confi
 
 Los ajustes y las correcciones se guardan en `config/modhub-settings.json` y `config/modhub-overrides.json` de cada instancia. Las cachés se separan por proveedor y contexto de Minecraft/cargador. Se conserva el formato de los ajustes y correcciones de 1.0.0.
 
-CurseForge **no está disponible como proveedor en estos candidatos**. Su activación requiere acceso autorizado y verificar los datos explícitos de cliente/servidor de su API. No hay claves privadas incorporadas ni un servidor intermediario.
+CurseForge **no está disponible como proveedor en estas versiones**. Su activación requiere acceso autorizado y verificar los datos explícitos de cliente/servidor de su API. No hay claves privadas incorporadas ni un servidor intermediario.
 
 ## Compilar
 

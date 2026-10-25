@@ -331,7 +331,8 @@ public final class ModrinthClient {
             + entry.project()
             + "; versión: "
             + entry.version()
-            + ".");
+            + ".",
+        "singleplayer_only".equals(entry.environment()));
   }
 
   /** Local declarations win; contradictory remote evidence remains visible. */
@@ -350,6 +351,6 @@ public final class ModrinthClient {
       }
       return local;
     }
-    return remote;
+    return remote.type() == ModType.UNKNOWN && !remote.singleplayerOnly() ? local : remote;
   }
 }

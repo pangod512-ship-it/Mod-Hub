@@ -19,10 +19,15 @@ public final class LogoData {
       ZipEntry entry = zip.getEntry(entryName);
       if (entry == null || entry.isDirectory() || entry.getSize() > 4194304)
         throw new IOException("Icono no válido");
-      byte[] encoded;
       try (InputStream in = zip.getInputStream(entry)) {
-        encoded = Io.readLimited(in, 4194304);
+        return read(in);
       }
+    }
+  }
+
+  /** The caller owns the stream, including streams backed by Forge's virtual resource roots. */
+  public static byte[] read(InputStream stream) throws IOException {
+      byte[] encoded = Io.readLimited(stream, 4194304);
       try (ImageInputStream input =
           ImageIO.createImageInputStream(new ByteArrayInputStream(encoded))) {
         Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
@@ -50,6 +55,5 @@ public final class LogoData {
           reader.dispose();
         }
       }
-    }
   }
 }

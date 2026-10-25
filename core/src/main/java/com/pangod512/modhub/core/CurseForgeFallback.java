@@ -40,6 +40,7 @@ public final class CurseForgeFallback {
         if ("curseforge".equals(loaded.get("provider").getAsString())
             && context.cacheKey().equals(loaded.get("context").getAsString())) {
           entries = loaded.getAsJsonObject("entries");
+          if (entries == null) throw new IOException("Caché sin entradas");
           retryAfter = Math.min(now + 86400, loaded.get("retryAfter").getAsLong());
         }
       } catch (IOException | RuntimeException | StackOverflowError ignored) {
@@ -66,7 +67,11 @@ public final class CurseForgeFallback {
                   "Resultado de la caché de CurseForge."));
         } else pending.add(target);
       } catch (IOException | RuntimeException ignored) {
-        /* Local classification remains available. */
+        String hash = hashes.get(target.id());
+        if (hash != null) {
+          entries.remove(hash);
+          pending.add(target);
+        }
       }
     }
     if (!enabled || client == null || now < retryAfter || pending.isEmpty()) return result;

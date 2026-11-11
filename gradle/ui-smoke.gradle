@@ -38,6 +38,7 @@ sourceSets {
 }
 
 minecraft.runs.client {
+    property 'modhub.smoke.language', providers.gradleProperty('uiSmokeLanguage').getOrElse('es_es')
     property 'modhub.smoke.output', file(providers.gradleProperty('uiSmokeOutput')
             .getOrElse("build/ui-smoke-${forge_version}")).absolutePath
     property 'modhub.smoke.expectedForge', forge_version

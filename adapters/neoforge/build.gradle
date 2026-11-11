@@ -1,0 +1,38 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+apply from: '../../gradle/modern-sources.gradle'
+apply from: '../../gradle/neoforge-jarcontents.gradle'
+
+def workspace = file('../..')
+def mc = findProperty('mcVersion') ?: '1.21.1'
+def target = new groovy.json.JsonSlurper().parse(file('../modern-targets.json')).find { it.minecraft == mc }
+if (target == null || !target.neoforge || mc == '1.20.1') {
+    throw new GradleException("No modern NeoForge target for ${mc}")
+}
+version = '1.1.1'
+group = 'com.pangod512.modhub'
+base { archivesName = 'modhub' }
+layout.buildDirectory.set(file("build/${mc}"))
+java.toolchain.languageVersion = JavaLanguageVersion.of(target.java as int)
+configurations.configureEach {
+    resolutionStrategy.eachDependency { dependency ->
+        if (dependency.requested.group == 'org.apache.logging.log4j' && dependency.requested.version == '2.11.+') {
+            dependency.useVersion('2.11.2')
+            dependency.because('Resolve the legacy unsafe selector without a Maven version-list request.')
+        }
+    }
+}
+neoForge {
+    version = target.neoforge
+    runs {
+        client {
+            client()
+            gameDirectory = file("run/${mc}")
+        }
+    }
+    mods { modhub { sourceSet sourceSets.main } }
+}
+
+apply from: '../../gradle/neoforge-common.gradle'

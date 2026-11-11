@@ -40,7 +40,8 @@ public final class JarInspector {
     String error;
 
     void accept(String name) throws IOException {
-      if (++entries > 100_000) throw new IOException("Demasiadas entradas");
+      if (++entries > 100_000)
+        throw new IOException(Messages.tr("modhub.too_many_entries", "Demasiadas entradas"));
       String[] parts = name.replace('\\', '/').split("/", 4);
       if (parts.length >= 3 && parts[0].equals("assets")) assets.add(parts[1]);
       if (parts.length >= 4 && parts[0].equals("data")) {
@@ -55,7 +56,10 @@ public final class JarInspector {
   public static CompletableFuture<ModClassification> analyze(ModRow row) {
     if (row.source().path().isEmpty()) {
       return CompletableFuture.completedFuture(
-          ModClassification.unknown("No hay un archivo legible para analizar."));
+          ModClassification.unknown(
+              Messages.tr(
+                  "modhub.there_is_no_readable_file_to_analyze",
+                  "No hay un archivo legible para analizar.")));
     }
     Path path = row.source().path().get();
     String key;
@@ -68,7 +72,10 @@ public final class JarInspector {
               + (row.source().kind() == ModSource.Kind.JAR ? Files.size(path) : 0);
     } catch (IOException | RuntimeException exception) {
       return CompletableFuture.completedFuture(
-          ModClassification.unknown("No se pudo acceder al archivo del mod."));
+          ModClassification.unknown(
+              Messages.tr(
+                  "modhub.could_not_access_the_mod_file",
+                  "No se pudo acceder al archivo del mod.")));
     }
     return CACHE
         .computeIfAbsent(key, ignored -> CompletableFuture.supplyAsync(() -> scan(row), WORKER))
@@ -99,7 +106,10 @@ public final class JarInspector {
     } catch (IOException | RuntimeException exception) {
       com.mojang.logging.LogUtils.getLogger()
           .warn("No se pudo analizar el archivo {}", source.fileName(), exception);
-      signals.error = "No se pudo completar el análisis del archivo; revisa el tipo manualmente.";
+      signals.error =
+          Messages.tr(
+              "modhub.could_not_finish_analyzing_the_file_review_the_type_manually",
+              "No se pudo completar el análisis del archivo; revisa el tipo manualmente.");
     }
     return signals;
   }
@@ -109,7 +119,8 @@ public final class JarInspector {
       var iterator = paths.iterator();
       int visited = 0;
       while (iterator.hasNext()) {
-        if (++visited > 100_000) throw new IOException("Demasiadas rutas");
+        if (++visited > 100_000)
+          throw new IOException(Messages.tr("modhub.too_many_paths", "Demasiadas rutas"));
         Path entry = iterator.next();
         if (Files.isRegularFile(entry)) signals.accept(root.relativize(entry).toString());
       }

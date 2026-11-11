@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+    id 'net.minecraftforge.gradle' version '7.0.3'
+}
+apply from: '../../gradle/modern-sources.gradle'
+apply from: '../../gradle/forge-events.gradle'
+ext.forgeNext = true
+def mc = findProperty('mcVersion') ?: '1.21.11'
+def target = new groovy.json.JsonSlurper().parse(file('../modern-targets.json')).find { it.minecraft == mc }
+version = '1.1.1'
+group = 'com.pangod512.modhub'
+base { archivesName = 'modhub' }
+layout.buildDirectory.set(file("build/${mc}-forge"))
+java.toolchain.languageVersion = JavaLanguageVersion.of(target.java as int)
+minecraft {
+    mappings channel: 'official', version: mc
+    runs {
+        register('client') {
+            workingDir = layout.projectDirectory.dir("run/${mc}-forge")
+        }
+    }
+}
+repositories {
+    minecraft.mavenizer(it)
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
+}
+dependencies { implementation minecraft.dependency("net.minecraftforge:forge:${target.forge}") }
+if (mc == '1.21') {
+    // ModLauncher 10.2.1 declares the 6.0 alpha but requires the module name from 5.0.4.
+    configurations.runtimeClasspath.resolutionStrategy.force 'net.sf.jopt-simple:jopt-simple:5.0.4'
+}
+apply from: '../../gradle/forge-common.gradle'
+if (project.hasProperty('portProbe')) apply from: '../../gradle/modern-probe.gradle'

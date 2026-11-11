@@ -35,6 +35,7 @@ public final class ClientBootstrap {
   }
 
   static void start() {
+    Messages.install(key -> net.minecraft.client.resources.I18n.get(key));
     identification =
         new IdentificationService(
             FMLPaths.CONFIGDIR.get(), new CompatibilityContext("1.16.5", "forge"), "1.1.1");
@@ -62,7 +63,7 @@ public final class ClientBootstrap {
         ((net.minecraftforge.fml.loading.moddiscovery.ModInfo) mod)
             .getConfigElement("authors")
             .map(Object::toString)
-            .orElse("No indicado");
+            .orElse(Messages.tr("modhub.not_specified", "No indicado"));
     Path file = null;
     try {
       if (mod.getOwningFile() != null)
@@ -83,15 +84,21 @@ public final class ClientBootstrap {
 
   static ModClassification classification(IModInfo mod) {
     String id = mod.getModId();
-    ModClassification value = ModClassification.unknown("Sin declaración explícita.");
+    ModClassification value =
+        ModClassification.unknown(
+            Messages.tr("modhub.no_explicit_declaration", "Sin declaración explícita."));
     if (id.equals("modhub"))
       value =
           new ModClassification(
-              ModType.CLIENT, ModClassification.Origin.DECLARED, "Mod de cliente.");
+              ModType.CLIENT,
+              ModClassification.Origin.DECLARED,
+              Messages.tr("modhub.client_mod", "Mod de cliente."));
     else if (id.equals("minecraft") || id.equals("forge"))
       value =
           new ModClassification(
-              ModType.BOTH, ModClassification.Origin.DECLARED, "Componente integrado.");
+              ModType.BOTH,
+              ModClassification.Origin.DECLARED,
+              Messages.tr("modhub.built_in_component", "Componente integrado."));
     else {
       boolean declared = false;
       try {
@@ -108,7 +115,8 @@ public final class ClientBootstrap {
             new ModClassification(
                 ModType.CLIENT,
                 ModClassification.Origin.DECLARED,
-                "Declaración explícita de cliente.");
+                Messages.tr(
+                    "modhub.explicit_client_declaration", "Declaración explícita de cliente."));
       else {
         CompletableFuture<ModClassification> future = local.get(id);
         if (future == null) {

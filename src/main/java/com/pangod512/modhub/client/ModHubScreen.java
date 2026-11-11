@@ -63,7 +63,11 @@ public final class ModHubScreen extends Screen {
     for (ModRow row : allMods) {
       ModClassification classification = row.classification();
       if (!classification.confirmed()) {
-        classification = ModClassification.unknown("Analizando el archivo en segundo plano...");
+        classification =
+            ModClassification.unknown(
+                Messages.tr(
+                    "modhub.analyzing_the_file_in_the_background",
+                    "Analizando el archivo en segundo plano..."));
         analyses.put(row.info().getModId(), JarInspector.analyze(row));
       }
       automatic.put(row.info().getModId(), classification);
@@ -95,7 +99,7 @@ public final class ModHubScreen extends Screen {
                 listBottom - 27,
                 detailWidth - 20,
                 20,
-                Component.literal("Corregir tipo"),
+                Component.literal(Messages.tr("modhub.correct_type", "Corregir tipo")),
                 button -> {
                   if (selected != null) minecraft.setScreen(new TypeOverrideScreen(this, selected));
                 }));
@@ -108,12 +112,15 @@ public final class ModHubScreen extends Screen {
             10,
             tableWidth - filterWidth - 6,
             20,
-            Component.literal("Buscar mods por nombre, autor o ID"));
+            Component.literal(
+                Messages.tr(
+                    "modhub.search_mods_by_name_author_or_id",
+                    "Buscar mods por nombre, autor o ID")));
     search.setBordered(true);
     search.setMaxLength(128);
     search.setTextColor(TEXT);
     search.setTextColorUneditable(MUTED);
-    search.setHint(Component.literal("Buscar mods..."));
+    search.setHint(Component.literal(Messages.tr("modhub.search_mods_e794ea64", "Buscar mods...")));
     search.setValue(query);
     search.setResponder(
         text -> {
@@ -143,7 +150,7 @@ public final class ModHubScreen extends Screen {
             footerY,
             buttonWidth,
             20,
-            Component.literal("Abrir carpeta de mods"),
+            Component.literal(Messages.tr("modhub.open_mods_folder", "Abrir carpeta de mods")),
             button -> Util.getPlatform().openFile(FMLPaths.MODSDIR.get().toFile())));
     configButton =
         addRenderableWidget(
@@ -152,7 +159,7 @@ public final class ModHubScreen extends Screen {
                 footerY,
                 buttonWidth,
                 20,
-                Component.literal("Configurar"),
+                Component.literal(Messages.tr("modhub.configure", "Configurar")),
                 button -> openConfig()));
     addRenderableWidget(
         vanillaButton(
@@ -160,7 +167,7 @@ public final class ModHubScreen extends Screen {
             footerY,
             width - margin - (margin + (buttonWidth + 8) * 2),
             20,
-            Component.literal("Volver"),
+            Component.literal(Messages.tr("modhub.back", "Volver")),
             button -> onClose()));
 
     refreshRows(true);
@@ -173,7 +180,8 @@ public final class ModHubScreen extends Screen {
   }
 
   private void updateFilterLabel() {
-    typeButton.setMessage(Component.literal("Tipo: " + filter.label + " ▾"));
+    typeButton.setMessage(
+        Component.literal(Messages.tr("modhub.type", "Tipo: ") + filter.label() + " ▾"));
   }
 
   private void refreshRows(boolean preserveSelection) {
@@ -215,13 +223,19 @@ public final class ModHubScreen extends Screen {
               factory -> {
                 Screen config = factory.apply(minecraft, this);
                 if (config == null)
-                  throw new IllegalStateException("El mod no devolvio una pantalla.");
+                  throw new IllegalStateException(
+                      Messages.tr(
+                          "modhub.the_mod_did_not_return_a_screen",
+                          "El mod no devolvio una pantalla."));
                 minecraft.setScreen(config);
               });
     } catch (Exception exception) {
       LogUtils.getLogger()
           .error("No se pudo abrir la configuracion de {}", selected.info().getModId(), exception);
-      configError = "No se pudo abrir la configuración de este mod.";
+      configError =
+          Messages.tr(
+              "modhub.could_not_open_this_mod_s_settings",
+              "No se pudo abrir la configuración de este mod.");
       details.refresh();
     }
   }
@@ -241,7 +255,9 @@ public final class ModHubScreen extends Screen {
       } catch (RuntimeException exception) {
         result =
             ModClassification.unknown(
-                "No se pudo analizar el archivo; puedes corregir el tipo manualmente.");
+                Messages.tr(
+                    "modhub.could_not_analyze_the_file_you_can_correct_the_type_manually",
+                    "No se pudo analizar el archivo; puedes corregir el tipo manualmente."));
       }
       automatic.put(entry.getKey(), result);
       iterator.remove();
@@ -283,20 +299,25 @@ public final class ModHubScreen extends Screen {
     if (overrides.warning() != null) {
       clippedText(
           graphics,
-          "Aviso: revisa los detalles",
+          Messages.tr("modhub.warning_review_the_details", "Aviso: revisa los detalles"),
           detailX + 2,
           listBottom + 4,
           detailWidth - 4,
           0xFFFFBE65);
     }
-    graphics.drawString(font, "Detalles del mod", detailX + 7, 16, MUTED);
+    graphics.drawString(
+        font, Messages.tr("modhub.mod_details", "Detalles del mod"), detailX + 7, 16, MUTED);
 
     frame(graphics, margin, tableTop, tableWidth, listBottom - tableTop, 0x88000000);
     graphics.hLine(margin + 1, margin + tableWidth - 2, tableTop + 22, 0xFFA0A0A0);
     drawTableHeader(graphics);
     if (table.children().isEmpty()) {
       graphics.drawCenteredString(
-          font, "Sin resultados", margin + tableWidth / 2, tableTop + 42, TEXT);
+          font,
+          Messages.tr("modhub.no_results", "Sin resultados"),
+          margin + tableWidth / 2,
+          tableTop + 42,
+          TEXT);
     }
     super.render(graphics, mouseX, mouseY, partialTick);
     if (filterOpen) renderFilter(graphics, mouseX, mouseY);
@@ -309,7 +330,11 @@ public final class ModHubScreen extends Screen {
   private void drawResultCount(GuiGraphics graphics) {
     if (!query.isBlank() || filter != ModType.ALL) {
       graphics.drawString(
-          font, table.children().size() + " resultados", margin, listBottom + 4, MUTED);
+          font,
+          table.children().size() + Messages.tr("modhub.results", " resultados"),
+          margin,
+          listBottom + 4,
+          MUTED);
     }
   }
 
@@ -323,13 +348,36 @@ public final class ModHubScreen extends Screen {
 
   private void drawTableHeader(GuiGraphics graphics) {
     int x = margin + 8;
-    graphics.drawString(font, "Nombre", table.getRowLeft() + 33, tableTop + 7, MUTED, false);
+    graphics.drawString(
+        font,
+        Messages.tr("modhub.name", "Nombre"),
+        table.getRowLeft() + 33,
+        tableTop + 7,
+        MUTED,
+        false);
     if (wideTable()) {
       graphics.drawString(
-          font, "Versión", x + (int) (tableWidth * .40), tableTop + 7, MUTED, false);
-      graphics.drawString(font, "Autor", x + (int) (tableWidth * .57), tableTop + 7, MUTED, false);
+          font,
+          Messages.tr("modhub.version", "Versión"),
+          x + (int) (tableWidth * .40),
+          tableTop + 7,
+          MUTED,
+          false);
+      graphics.drawString(
+          font,
+          Messages.tr("modhub.author", "Autor"),
+          x + (int) (tableWidth * .57),
+          tableTop + 7,
+          MUTED,
+          false);
     }
-    graphics.drawString(font, "Tipo", typeColumnX() + 4, tableTop + 7, MUTED, false);
+    graphics.drawString(
+        font,
+        Messages.tr("modhub.type_6cc6198d", "Tipo"),
+        typeColumnX() + 4,
+        tableTop + 7,
+        MUTED,
+        false);
   }
 
   private void renderFilter(GuiGraphics graphics, int mouseX, int mouseY) {
@@ -348,7 +396,7 @@ public final class ModHubScreen extends Screen {
       }
       graphics.drawString(
           font,
-          type.label,
+          type.label(),
           x + 8,
           rowY + (optionHeight - 8) / 2,
           type == filter ? ACCENT : type.color,
@@ -437,6 +485,7 @@ public final class ModHubScreen extends Screen {
   private void badge(
       GuiGraphics graphics, ModClassification classification, int x, int y, int maxWidth) {
     ModType type = classification.type();
+    if (!type.hasBadge()) return;
     String label = classification.label();
     int badgeWidth = Math.min(font.width(label) + 8, maxWidth);
     graphics.fill(x, y, x + badgeWidth, y + 14, 0xA0202928);
@@ -500,7 +549,7 @@ public final class ModHubScreen extends Screen {
                 + ", "
                 + row.classification().label()
                 + ", "
-                + row.classification().origin().label);
+                + row.classification().origin().label());
       }
 
       @Override
@@ -553,7 +602,12 @@ public final class ModHubScreen extends Screen {
     private int contentHeight;
 
     DetailsPanel(int x, int y, int width, int height) {
-      super(x, y, width, height, Component.literal("Detalles del mod"));
+      super(
+          x,
+          y,
+          width,
+          height,
+          Component.literal(Messages.tr("modhub.mod_details", "Detalles del mod")));
     }
 
     void refresh() {
@@ -566,22 +620,33 @@ public final class ModHubScreen extends Screen {
       setScrollAmount(0);
       iconSize = height < 180 ? 36 : 56;
       if (selected == null) {
-        addLines("Selecciona un mod para ver sus detalles.", MUTED, false);
+        addLines(
+            Messages.tr(
+                "modhub.select_a_mod_to_view_its_details",
+                "Selecciona un mod para ver sus detalles."),
+            MUTED,
+            false);
         if (overrides.warning() != null) addLines(overrides.warning(), 0xFFFFBE65, false);
         contentHeight = lines.size() * 12 + 20;
         return;
       }
       addLines(selected.name(), TEXT, true);
       blank();
-      addLines("Versión: " + selected.version(), ACCENT, true);
-      addLines("Autor: " + selected.author(), MUTED, true);
+      addLines(
+          Messages.tr("modhub.version_f3cde000", "Versión: ") + selected.version(), ACCENT, true);
+      addLines(Messages.tr("modhub.author_8c1505e7", "Autor: ") + selected.author(), MUTED, true);
       blank();
-      addLines("Tipo: " + selected.classification().label(), selected.type().color, false);
+      addLines(
+          Messages.tr("modhub.type", "Tipo: ") + selected.classification().label(),
+          selected.type().color,
+          false);
       blank();
-      String description = selected.info().getDescription();
+      String description = selected.descriptor().description();
       addLines(
           description == null || description.isBlank()
-              ? "Este mod no incluye una descripción."
+              ? Messages.tr(
+                  "modhub.this_mod_does_not_include_a_description",
+                  "Este mod no incluye una descripción.")
               : description,
           TEXT,
           false);
@@ -589,12 +654,12 @@ public final class ModHubScreen extends Screen {
       addLines("ID: " + selected.info().getModId(), MUTED, false);
       blank();
       ModSource source = selected.source();
-      addLines("Archivo: " + source.fileName(), MUTED, false);
+      addLines(Messages.tr("modhub.file", "Archivo: ") + source.fileName(), MUTED, false);
       if (source.kind() != ModSource.Kind.INTEGRATED) {
-        addLines("Carga: " + source.kind().label, MUTED, false);
+        addLines(Messages.tr("modhub.source", "Carga: ") + source.kind().label(), MUTED, false);
       }
       if (source.kind() == ModSource.Kind.NESTED) {
-        addLines("Ubicación: " + source.location(), MUTED, false);
+        addLines(Messages.tr("modhub.location", "Ubicación: ") + source.location(), MUTED, false);
       }
       if (overrides.warning() != null) {
         blank();
@@ -657,7 +722,7 @@ public final class ModHubScreen extends Screen {
           NarratedElementType.TITLE,
           selected == null
               ? getMessage()
-              : Component.literal(selected.name() + ". " + selected.info().getDescription()));
+              : Component.literal(selected.name() + ". " + selected.descriptor().description()));
     }
   }
 }

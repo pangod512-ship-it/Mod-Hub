@@ -26,10 +26,14 @@ final class TypeScreen extends GuiScreen {
               y,
               220,
               20,
-              type == ModType.ALL ? "Detección automática" : type.label));
+              type == ModType.ALL
+                  ? Messages.tr("modhub.automatic_detection", "Detección automática")
+                  : type.label()));
       y += 24;
     }
-    buttonList.add(new GuiButton(99, width / 2 - 110, height - 30, 220, 20, "Volver"));
+    buttonList.add(
+        new GuiButton(
+            99, width / 2 - 110, height - 30, 220, 20, Messages.tr("modhub.back", "Volver")));
   }
 
   protected void actionPerformed(GuiButton button) {
@@ -44,7 +48,8 @@ final class TypeScreen extends GuiScreen {
           button.id == 0 ? null : ModType.values()[button.id]);
       mc.displayGuiScreen(parent);
     } catch (IOException failure) {
-      error = "No se pudo guardar la corrección.";
+      error =
+          Messages.tr("modhub.could_not_save_the_correction", "No se pudo guardar la corrección.");
     }
   }
 
@@ -55,7 +60,12 @@ final class TypeScreen extends GuiScreen {
 
   public void drawScreen(int x, int y, float partial) {
     drawDefaultBackground();
-    drawCenteredString(fontRenderer, "Corregir tipo: " + mod.getName(), width / 2, 15, 0x96CD70);
+    drawCenteredString(
+        fontRenderer,
+        Messages.tr("modhub.correct_type_c54974b2", "Corregir tipo: ") + mod.getName(),
+        width / 2,
+        15,
+        0x96CD70);
     drawCenteredString(fontRenderer, error, width / 2, height - 44, 0xffaaaa);
     super.drawScreen(x, y, partial);
   }

@@ -13,7 +13,9 @@ public final class ModrinthService {
   private final IdentificationService delegate =
       new IdentificationService(
           FMLPaths.CONFIGDIR.get(),
-          new CompatibilityContext("1.20.1", "forge"),
+          new CompatibilityContext(
+              net.minecraft.SharedConstants.getCurrentVersion().getName(),
+              ModList.get().isLoaded("neoforge") ? "neoforge" : "forge"),
           ModList.get()
               .getModContainerById("modhub")
               .orElseThrow()

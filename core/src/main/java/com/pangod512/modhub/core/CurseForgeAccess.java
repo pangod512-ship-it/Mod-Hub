@@ -11,6 +11,8 @@ public final class CurseForgeAccess {
   }
 
   public static String reason() {
-    return "CurseForge no disponible: acceso API y datos de entorno pendientes de validar.";
+    return Messages.tr(
+        "modhub.curseforge_unavailable_api_access_and_environment_data_have_not_been_v",
+        "CurseForge no disponible: acceso API y datos de entorno pendientes de validar.");
   }
 }

@@ -19,10 +19,14 @@ public final class IdentificationService {
           });
   private volatile ModrinthResolver.Snapshot snapshot =
       new ModrinthResolver.Snapshot(
-          Collections.emptyMap(), Collections.emptyMap(), "Preparando la identificación...");
+          Collections.emptyMap(),
+          Collections.emptyMap(),
+          Messages.tr("modhub.preparing_identification", "Preparando la identificación..."));
   private List<ModrinthResolver.Target> targets = Collections.emptyList();
   private CompletableFuture<?> task;
   private boolean rerun;
+  private String languageMarker =
+      Messages.tr("modhub.mod_hub_settings", "Configuración de Mod Hub");
 
   public IdentificationService(Path config, CompatibilityContext context, String version) {
     this.config = config;
@@ -36,7 +40,16 @@ public final class IdentificationService {
   }
 
   public ModrinthResolver.Snapshot snapshot() {
+    checkLanguage();
     return snapshot;
+  }
+
+  private synchronized void checkLanguage() {
+    String current = Messages.tr("modhub.mod_hub_settings", "Configuración de Mod Hub");
+    if (!current.equals(languageMarker)) {
+      languageMarker = current;
+      refresh();
+    }
   }
 
   public void start(List<ModrinthResolver.Target> files) {
@@ -86,7 +99,9 @@ public final class IdentificationService {
                     new ModrinthResolver.Snapshot(
                         snapshot.classifications(),
                         snapshot.notes(),
-                        "Identificación incompleta; se conserva la detección local.");
+                        Messages.tr(
+                            "modhub.identification_incomplete_local_detection_is_retained",
+                            "Identificación incompleta; se conserva la detección local."));
                 CoreLog.warn("Mod Hub: identificación incompleta", failure);
               } finally {
                 synchronized (this) {

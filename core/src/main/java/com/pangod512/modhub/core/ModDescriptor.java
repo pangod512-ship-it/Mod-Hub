@@ -13,8 +13,14 @@ public final class ModDescriptor {
       String id, String name, String version, String author, String description, Path file) {
     this.id = id == null ? "unknown" : id;
     this.name = name == null || name.isEmpty() ? this.id : name;
-    this.version = version == null || version.isEmpty() ? "No indicada" : version;
-    this.author = author == null || author.isEmpty() ? "No indicado" : author;
+    this.version =
+        version == null || version.isEmpty()
+            ? Messages.tr("modhub.not_specified_6b6fcd99", "No indicada")
+            : version;
+    this.author =
+        author == null || author.isEmpty()
+            ? Messages.tr("modhub.not_specified", "No indicado")
+            : author;
     this.description = description == null ? "" : description;
     this.file = file;
   }
@@ -36,7 +42,9 @@ public final class ModDescriptor {
   }
 
   public String description() {
-    return description;
+    return "modhub".equals(id)
+        ? Messages.tr("modhub.description", "Busca, filtra e inspecciona los mods instalados.")
+        : description;
   }
 
   public Path file() {

@@ -1,0 +1,95 @@
+ext.adaptModernSource = { String source, String minecraftVersion ->
+    def parts = minecraftVersion.tokenize('.').collect { it as int }
+    def patch = parts.size() > 2 ? parts[2] : 0
+    def atLeast = { int minor, int revision -> parts[1] > minor || (parts[1] == minor && patch >= revision) }
+    def updated = source.replace('\r\n', '\n')
+    if (atLeast(20, 2)) {
+        updated = updated.replace('    search.tick();', '')
+            .replace('      setRenderTopAndBottom(false);', '')
+            .replace('      setRenderSelection(true);', '')
+            .replace('double mouseY, double amount)', 'double mouseY, double horizontalAmount, double amount)')
+            .replace('super.mouseScrolled(mouseX, mouseY, amount)', 'super.mouseScrolled(mouseX, mouseY, horizontalAmount, amount)')
+    }
+    if (atLeast(20, 3)) {
+        updated = updated.replace('table.setLeftPos(', 'table.setX(')
+            .replace('super(ModHubScreen.this.minecraft, listWidth, ModHubScreen.this.height, top, bottom, 34);',
+                'super(ModHubScreen.this.minecraft, listWidth, bottom - top, top, 34);')
+    }
+    if (atLeast(20, 5)) {
+        if (updated.contains('extends Screen') && updated.contains('public void render(GuiGraphics graphics')) {
+            updated = updated.replace('  @Override\n  public void render(GuiGraphics graphics',
+                '  @Override\n  public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {}\n\n' +
+                '  @Override\n  public void render(GuiGraphics graphics')
+        }
+        updated = updated.replace('      setRenderBackground(false);', '')
+        if (updated.contains('    void clearRows() {')) {
+            updated = updated.replace('    void clearRows() {',
+                '    @Override protected void renderListBackground(GuiGraphics graphics) {}\n' +
+                '    @Override protected void renderListSeparators(GuiGraphics graphics) {}\n' +
+                '    void clearRows() {')
+        }
+        updated = updated.replaceAll(/(?m)^  private final PanoramaRenderer panorama = new PanoramaRenderer\(TitleScreen.CUBE_MAP\);\s*/, '')
+            .replace('panorama.render(partialTick, 1.0F)', 'renderPanorama(graphics, partialTick)')
+    }
+    if (atLeast(21, 2)) {
+        if (updated.contains('graphics.blit(')) {
+            def pipeline = atLeast(21, 6) ? 'net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED' : 'net.minecraft.client.renderer.RenderType::guiTextured'
+            updated = updated.replaceAll(/(?s)graphics\.blit\(\s*image\.texture,.*?\);/,
+                "graphics.blit(${pipeline}, image.texture, x + (size - drawWidth) / 2, y + (size - drawHeight) / 2, 0.0F, 0.0F, drawWidth, drawHeight, image.width, image.height, image.width, image.height);")
+        }
+    }
+    if (atLeast(21, 4)) {
+        updated = updated.replace('AbstractScrollWidget', 'AbstractTextAreaWidget')
+            .replace('getScrollbarPosition()', 'scrollBarX()')
+            .replace('.getScrollAmount()', '.scrollAmount()')
+        if (updated.contains('class ModLogos')) {
+            updated = updated.replace('  private final Map<String, Optional<Logo>> logos', '  private int nextLogo;\n  private final Map<String, Optional<Logo>> logos')
+                .replaceAll(/(?s)ResourceLocation id =\s*Minecraft\.getInstance\(\)\.getTextureManager\(\)\.register\("modhub_logo", texture\);/,
+                    'ResourceLocation id = ResourceLocation.fromNamespaceAndPath("modhub", "logo/" + nextLogo++);\n      Minecraft.getInstance().getTextureManager().register(id, texture);')
+        }
+    }
+    if (atLeast(21, 5)) {
+        updated = updated.replace('RenderSystem.enableBlend();', '').replace('RenderSystem.disableBlend();', '')
+            .replace('new DynamicTexture(image)', 'new DynamicTexture(() -> "Mod Hub logo", image)')
+    }
+    if (atLeast(21, 6)) {
+        updated = updated.replace('.pushPose()', '.pushMatrix()').replace('.popPose()', '.popMatrix()')
+            .replace('.translate(0, 0, 300)', '.translate(0, 0)')
+            .replace('getCurrentVersion().getName()', 'getCurrentVersion().name()')
+    }
+    if (atLeast(21, 9)) {
+        if (!atLeast(21, 11)) updated = updated.replace('graphics.renderOutline(', 'graphics.submitOutline(')
+        updated = updated.replace('hasControlDown()', 'event.hasControlDown()')
+        updated = updated.replace('      centerListVertically = false;', '')
+            .replace('getScrollbarPosition()', 'scrollBarX()')
+            .replace('.getScrollAmount()', '.scrollAmount()')
+            .replace('public boolean mouseClicked(double mouseX, double mouseY, int button) {',
+                'public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {\n      double mouseX = event.x(), mouseY = event.y(); int button = event.button();')
+            .replace('super.mouseClicked(mouseX, mouseY, button)', 'super.mouseClicked(event, doubleClick)')
+            .replace('public boolean keyPressed(int keyCode, int scanCode, int modifiers) {',
+                'public boolean keyPressed(net.minecraft.client.input.KeyEvent event) {\n    int keyCode = event.key(), scanCode = event.scancode(), modifiers = event.modifiers();')
+            .replace('super.keyPressed(keyCode, scanCode, modifiers)', 'super.keyPressed(event)')
+        updated = updated.replaceAll(/(?s)      @Override\s+public void render\(\s*GuiGraphics graphics,\s*int index,\s*int y,\s*int x,\s*int rowWidth,\s*int rowHeight,\s*int mouseX,\s*int mouseY,\s*boolean hovered,\s*float partialTick\) \{/,
+            '      @Override public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean hovered, float partialTick) {\n        int x = getContentX(), y = getContentY(), rowWidth = getContentWidth(), rowHeight = getContentHeight();')
+    }
+    if (atLeast(21, 11)) {
+        updated = updated.replace('ResourceLocation', 'Identifier')
+            .replace('import net.minecraft.Util;', 'import net.minecraft.util.Util;')
+        if (updated.contains('class HubButton')) {
+            updated = updated.replace('void renderWidget(', 'void renderContents(')
+        }
+        if (updated.contains('class ModLogos')) {
+            updated = updated.replace('new DynamicTexture(() -> "Mod Hub logo", image)', 'new LogoTexture(image, mod.getLogoBlur())')
+                .replace('texture.setFilter(mod.getLogoBlur(), false);', '')
+                .replace('  private record Logo(', '''  private static final class LogoTexture extends DynamicTexture {
+    LogoTexture(NativeImage image, boolean blur) {
+      super(() -> "Mod Hub logo", image);
+      var mode = blur ? com.mojang.blaze3d.textures.FilterMode.LINEAR : com.mojang.blaze3d.textures.FilterMode.NEAREST;
+      sampler = RenderSystem.getSamplerCache().getSampler(com.mojang.blaze3d.textures.AddressMode.CLAMP_TO_EDGE, com.mojang.blaze3d.textures.AddressMode.CLAMP_TO_EDGE, mode, mode, false);
+    }
+  }
+  private record Logo(''')
+        }
+    }
+    updated
+}

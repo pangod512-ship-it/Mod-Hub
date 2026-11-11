@@ -30,7 +30,8 @@ public final class CurseForgeClient {
     Map<String, ModClassification> result = new HashMap<>();
     Set<String> conflicts = new HashSet<>();
     if (byFingerprint.isEmpty()) return result;
-    if (byFingerprint.size() > 100) throw new IOException("Lote demasiado grande");
+    if (byFingerprint.size() > 100)
+      throw new IOException(Messages.tr("modhub.batch_too_large", "Lote demasiado grande"));
     ModrinthClient.Response response = transport.request(new ArrayList<>(byFingerprint.keySet()));
     if (response.status() != 200)
       throw new ModrinthClient.ApiFailure(
@@ -60,17 +61,24 @@ public final class CurseForgeClient {
               new ModClassification(
                   type,
                   ModClassification.Origin.CURSEFORGE,
-                  "Archivo exacto; solo se utilizan etiquetas explícitas de entorno.");
+                  Messages.tr(
+                      "modhub.exact_file_only_explicit_environment_labels_are_used",
+                      "Archivo exacto; solo se utilizan etiquetas explícitas de entorno."));
           ModClassification prior = result.get(target.id());
           if (prior != null && prior.type() != type) conflicts.add(target.id());
           if (conflicts.contains(target.id()))
             classification =
-                ModClassification.unknown("Coincidencias contradictorias en CurseForge.");
+                ModClassification.unknown(
+                    Messages.tr(
+                        "modhub.conflicting_matches_on_curseforge",
+                        "Coincidencias contradictorias en CurseForge."));
           result.put(target.id(), classification);
         }
       }
     } catch (RuntimeException | StackOverflowError failure) {
-      throw new IOException("Respuesta de CurseForge no válida", failure);
+      throw new IOException(
+          Messages.tr("modhub.invalid_curseforge_response", "Respuesta de CurseForge no válida"),
+          failure);
     }
     return result;
   }
@@ -103,7 +111,8 @@ public final class CurseForgeClient {
       int b;
       while ((b = in.read()) != -1)
         if (!whitespace(b)) {
-          if (length == Integer.MAX_VALUE) throw new IOException("Archivo demasiado grande");
+          if (length == Integer.MAX_VALUE)
+            throw new IOException(Messages.tr("modhub.file_too_large", "Archivo demasiado grande"));
           length++;
         }
     }

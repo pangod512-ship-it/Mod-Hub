@@ -1,0 +1,192 @@
+[
+  {
+    "minecraft": "1.20",
+    "forge": "1.20-46.0.14",
+    "neoforge": null,
+    "java": 17,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "unavailable"
+    }
+  },
+  {
+    "minecraft": "1.20.1",
+    "forge": "1.20.1-47.4.28",
+    "neoforge": "1.20.1-47.1.106",
+    "java": 17,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.20.2",
+    "forge": "1.20.2-48.1.0",
+    "neoforge": "20.2.93",
+    "java": 17,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.20.3",
+    "forge": "1.20.3-49.0.2",
+    "neoforge": "20.3.8-beta",
+    "java": 17,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.20.4",
+    "forge": "1.20.4-49.2.13",
+    "neoforge": "20.4.253",
+    "java": 17,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.20.5",
+    "forge": null,
+    "neoforge": "20.5.21-beta",
+    "java": 21,
+    "validation": {
+      "forge": "unavailable",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.20.6",
+    "forge": "1.20.6-50.2.14",
+    "neoforge": "20.6.144",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21",
+    "forge": "1.21-51.0.33",
+    "neoforge": "21.0.167",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21.1",
+    "forge": "1.21.1-52.1.20",
+    "neoforge": "21.1.264",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21.2",
+    "forge": null,
+    "neoforge": "21.2.1-beta",
+    "java": 21,
+    "validation": {
+      "forge": "unavailable",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21.3",
+    "forge": "1.21.3-53.1.16",
+    "neoforge": "21.3.100",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21.4",
+    "forge": "1.21.4-54.1.22",
+    "neoforge": "21.4.161",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21.5",
+    "forge": "1.21.5-55.1.18",
+    "neoforge": "21.5.101",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21.6",
+    "forge": "1.21.6-56.0.9",
+    "neoforge": "21.6.20-beta",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21.7",
+    "forge": "1.21.7-57.0.3",
+    "neoforge": "21.7.25-beta",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21.8",
+    "forge": "1.21.8-58.1.26",
+    "neoforge": "21.8.57",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21.9",
+    "forge": "1.21.9-59.0.5",
+    "neoforge": "21.9.16-beta",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21.10",
+    "forge": "1.21.10-60.1.18",
+    "neoforge": "21.10.64",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  },
+  {
+    "minecraft": "1.21.11",
+    "forge": "1.21.11-61.2.4",
+    "neoforge": "21.11.48",
+    "java": 21,
+    "validation": {
+      "forge": "runtime_probe_passed_85",
+      "neoforge": "runtime_probe_passed_85"
+    }
+  }
+]

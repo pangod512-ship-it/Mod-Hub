@@ -99,7 +99,8 @@ public final class ModrinthCache {
     this.context = context;
     if (!Files.exists(file)) return;
     try {
-      if (Files.size(file) > 4_194_304) throw new IOException("Caché demasiado grande");
+      if (Files.size(file) > 4_194_304)
+        throw new IOException(Messages.tr("modhub.cache_too_large", "Caché demasiado grande"));
       JsonObject root =
           new JsonParser()
               .parse(new String(Files.readAllBytes(file), java.nio.charset.StandardCharsets.UTF_8))
@@ -108,13 +109,13 @@ public final class ModrinthCache {
           ? !context.cacheKey().equals(root.get("context").getAsString())
           : !context.cacheKey().equals("1.20.1-forge")) return;
       if (!root.get("schema").getAsString().equals("1"))
-        throw new IOException("Formato desconocido");
+        throw new IOException(Messages.tr("modhub.unknown_format", "Formato desconocido"));
       long loadedRetry = root.get("retryAfter").getAsLong();
       Map<String, Entry> loaded = new HashMap<>();
       for (Map.Entry<String, com.google.gson.JsonElement> item :
           root.getAsJsonObject("entries").entrySet()) {
         if (!item.getKey().matches("[0-9a-f]{128}") || loaded.size() >= 5000)
-          throw new IOException("Huella no válida");
+          throw new IOException(Messages.tr("modhub.invalid_fingerprint", "Huella no válida"));
         JsonObject value = item.getValue().getAsJsonObject();
         Entry entry =
             new Entry(
@@ -128,7 +129,7 @@ public final class ModrinthCache {
                     || !entry.version().matches("[a-zA-Z0-9]{8}")))
             || entry.checkedAt() < 0
             || !ModrinthClient.ENVIRONMENTS.contains(entry.environment()))
-          throw new IOException("Entrada no válida");
+          throw new IOException(Messages.tr("modhub.invalid_entry", "Entrada no válida"));
         loaded.put(item.getKey(), entry);
       }
       entries.putAll(loaded);

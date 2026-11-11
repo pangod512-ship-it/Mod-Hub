@@ -23,6 +23,21 @@ public record ModSource(Kind kind, Optional<Path> path, String fileName, String 
 
     public final String label;
 
+    public String label() {
+      switch (this) {
+        case INTEGRATED:
+          return Messages.tr("modhub.built_in", label);
+        case JAR:
+          return Messages.tr("modhub.jar_file", label);
+        case NESTED:
+          return Messages.tr("modhub.bundled_with_another_mod", label);
+        case DEVELOPMENT:
+          return Messages.tr("modhub.development_folder", label);
+        default:
+          return Messages.tr("modhub.unavailable", label);
+      }
+    }
+
     Kind(String label) {
       this.label = label;
     }
@@ -30,7 +45,7 @@ public record ModSource(Kind kind, Optional<Path> path, String fileName, String 
 
   public static ModSource from(IModInfo info) {
     if ("minecraft".equals(info.getModId()) || "forge".equals(info.getModId())) {
-      return new ModSource(Kind.INTEGRATED, Optional.empty(), "Integrado", "");
+      return new ModSource(Kind.INTEGRATED, Optional.empty(), Kind.INTEGRATED.label(), "");
     }
     try {
       if (info.getOwningFile() == null || info.getOwningFile().getFile() == null) return unknown();
@@ -67,16 +82,18 @@ public record ModSource(Kind kind, Optional<Path> path, String fileName, String 
   }
 
   private static ModSource unknown() {
-    return new ModSource(Kind.UNKNOWN, Optional.empty(), "No disponible", "");
+    return new ModSource(Kind.UNKNOWN, Optional.empty(), Kind.UNKNOWN.label(), "");
   }
 
   private static String name(Path path) {
     Path name = path.getFileName();
-    return name == null || name.toString().isBlank() ? "Sin nombre" : name.toString();
+    return name == null || name.toString().isBlank()
+        ? Messages.tr("modhub.unnamed", "Sin nombre")
+        : name.toString();
   }
 
   private static String describe(Path path, int depth) {
-    if (depth >= 16) return "Ubicación anidada";
+    if (depth >= 16) return Messages.tr("modhub.nested_location", "Ubicación anidada");
     if (path instanceof UnionPath union) {
       return describe(union.getFileSystem().getPrimaryPath(), depth + 1)
           + (path.equals(path.getRoot()) ? "" : "!" + path);

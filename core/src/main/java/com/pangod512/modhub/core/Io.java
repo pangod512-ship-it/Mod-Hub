@@ -14,7 +14,9 @@ final class Io {
     while ((count = input.read(buffer, 0, Math.min(buffer.length, limit + 1 - output.size())))
         != -1) {
       output.write(buffer, 0, count);
-      if (output.size() > limit) throw new IOException("Respuesta demasiado grande");
+      if (output.size() > limit)
+        throw new IOException(
+            Messages.tr("modhub.response_too_large", "Respuesta demasiado grande"));
     }
     return output.toByteArray();
   }

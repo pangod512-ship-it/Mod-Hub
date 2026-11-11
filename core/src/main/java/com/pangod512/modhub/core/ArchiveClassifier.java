@@ -23,13 +23,15 @@ public final class ArchiveClassifier {
 
   public static ModClassification inspect(Path file, String id, boolean singleMod) {
     if (file == null || !Files.isRegularFile(file))
-      return ModClassification.unknown("No hay archivo JAR legible.");
+      return ModClassification.unknown(
+          Messages.tr("modhub.no_readable_jar_file", "No hay archivo JAR legible."));
     Set<String> assets = new HashSet<>(), data = new HashSet<>(), gameplay = new HashSet<>();
     try (ZipFile zip = new ZipFile(file.toFile())) {
       Enumeration<? extends java.util.zip.ZipEntry> entries = zip.entries();
       int count = 0;
       while (entries.hasMoreElements()) {
-        if (++count > 100000) throw new IOException("Demasiadas entradas");
+        if (++count > 100000)
+          throw new IOException(Messages.tr("modhub.too_many_entries", "Demasiadas entradas"));
         String[] parts = entries.nextElement().getName().replace('\\', '/').split("/", 4);
         if (parts.length >= 3 && parts[0].equals("assets")) assets.add(parts[1]);
         if (parts.length >= 4 && parts[0].equals("data")) {
@@ -38,7 +40,8 @@ public final class ArchiveClassifier {
         }
       }
     } catch (IOException | RuntimeException failure) {
-      return ModClassification.unknown("No se pudo analizar el archivo.");
+      return ModClassification.unknown(
+          Messages.tr("modhub.could_not_analyze_the_file", "No se pudo analizar el archivo."));
     }
     return classify(assets, data, gameplay, null, id, singleMod);
   }
@@ -55,7 +58,9 @@ public final class ArchiveClassifier {
       return new ModClassification(
           ModType.BOTH,
           ModClassification.Origin.ESTIMATED,
-          "Contiene datos de juego; tipo estimado, revisable manualmente.");
+          Messages.tr(
+              "modhub.contains_game_data_estimated_type_subject_to_manual_review",
+              "Contiene datos de juego; tipo estimado, revisable manualmente."));
     return ModClassification.unknown(
         "Los recursos del archivo no permiten confirmar su compatibilidad de cliente/servidor.");
   }

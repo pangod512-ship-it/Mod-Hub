@@ -14,12 +14,16 @@ public final class ModHubSettingsScreen extends Screen {
   private String error;
 
   public ModHubSettingsScreen(Screen parent) {
-    super(Component.literal("Configuración de Mod Hub"));
+    super(Component.literal(Messages.tr("modhub.mod_hub_settings", "Configuración de Mod Hub")));
     this.parent = parent;
   }
 
   private Component label() {
-    return Component.literal("Consultar Modrinth: " + (service.settings().enabled() ? "Sí" : "No"));
+    return Component.literal(
+        Messages.tr("modhub.query_modrinth", "Consultar Modrinth: ")
+            + (service.settings().enabled()
+                ? Messages.tr("modhub.yes", "Sí")
+                : Messages.tr("modhub.no", "No")));
   }
 
   @Override
@@ -39,33 +43,19 @@ public final class ModHubSettingsScreen extends Screen {
                 error = null;
                 service.refresh();
               } catch (java.io.IOException | RuntimeException failure) {
-                error = "No se pudo guardar la opción.";
+                error =
+                    Messages.tr(
+                        "modhub.could_not_save_the_setting", "No se pudo guardar la opción.");
               }
             }));
-    var curseforge =
-        addRenderableWidget(
-            new HubButton(
-                x,
-                76,
-                w,
-                22,
-                Component.literal(
-                    CurseForgeAccess.available()
-                        ? "Consultar CurseForge: "
-                            + (service.settings().curseforgeEnabled() ? "Sí" : "No")
-                        : "CurseForge: no disponible"),
-                button -> {
-                  try {
-                    service.settings().saveCurseforge(!service.settings().curseforgeEnabled());
-                    rebuildWidgets();
-                    service.refresh();
-                  } catch (java.io.IOException failure) {
-                    error = "No se pudo guardar la opción.";
-                  }
-                }));
-    curseforge.active = CurseForgeAccess.available();
     addRenderableWidget(
-        new HubButton(x, height - 32, w, 22, Component.literal("Volver"), button -> onClose()));
+        new HubButton(
+            x,
+            height - 32,
+            w,
+            22,
+            Component.literal(Messages.tr("modhub.back", "Volver")),
+            button -> onClose()));
   }
 
   @Override
@@ -79,13 +69,15 @@ public final class ModHubSettingsScreen extends Screen {
     graphics.fill(0, 0, width, height, 0xC0101416);
     graphics.drawCenteredString(font, title, width / 2, 18, 0xFF96CD70);
     String text =
-        "Identifica archivos nuevos o actualizados y guarda sus tipos para usarlos sin conexión."
-            + " Solo envía huellas de archivos; no sube los mods. Al desactivar, se conserva la"
-            + " caché. Una consulta que ya esté en curso puede terminar.";
+        Messages.tr(
+            "modhub.identifies_new_or_updated_files_and_caches_their_types_for_offline_use",
+            "Identifica archivos nuevos o actualizados y guarda sus tipos para usarlos sin"
+                + " conexión. Solo envía huellas de archivos; no sube los mods. Al desactivar, se"
+                + " conserva la caché. Una consulta que ya esté en curso puede terminar.");
     text += "\n\n" + service.snapshot().status();
     if (service.settings().warning() != null) text += "\n" + service.settings().warning();
     if (error != null) text += "\n" + error;
-    int y = 110;
+    int y = 82;
     for (var line : font.split(Component.literal(text), Math.min(400, width - 32))) {
       if (y > height - 48) break;
       graphics.drawCenteredString(font, line, width / 2, y, 0xFFEEEFEA);

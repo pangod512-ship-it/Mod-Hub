@@ -1,0 +1,622 @@
+{
+  "modhub.all": {
+    "en_us": "All",
+    "es_es": "Todos"
+  },
+  "modhub.client": {
+    "en_us": "Client",
+    "es_es": "Cliente"
+  },
+  "modhub.server": {
+    "en_us": "Server",
+    "es_es": "Servidor"
+  },
+  "modhub.both": {
+    "en_us": "Both",
+    "es_es": "Ambos"
+  },
+  "modhub.undetermined": {
+    "en_us": "Undetermined",
+    "es_es": "Sin determinar"
+  },
+  "modhub.manual": {
+    "en_us": "Manual",
+    "es_es": "Manual"
+  },
+  "modhub.declared": {
+    "en_us": "Declared",
+    "es_es": "Declarado"
+  },
+  "modhub.estimated": {
+    "en_us": "Estimated",
+    "es_es": "Estimado"
+  },
+  "modhub.correct_type": {
+    "en_us": "Correct type",
+    "es_es": "Corregir tipo"
+  },
+  "modhub.correct_type_c54974b2": {
+    "en_us": "Correct type: ",
+    "es_es": "Corregir tipo: "
+  },
+  "modhub.search_mods": {
+    "en_us": "Search mods",
+    "es_es": "Buscar mods"
+  },
+  "modhub.search_mods_by_name_author_or_id": {
+    "en_us": "Search mods by name, author or ID",
+    "es_es": "Buscar mods por nombre, autor o ID"
+  },
+  "modhub.search_mods_e794ea64": {
+    "en_us": "Search mods...",
+    "es_es": "Buscar mods..."
+  },
+  "modhub.open_mods_folder": {
+    "en_us": "Open mods folder",
+    "es_es": "Abrir carpeta de mods"
+  },
+  "modhub.configure": {
+    "en_us": "Configure",
+    "es_es": "Configurar"
+  },
+  "modhub.back": {
+    "en_us": "Back",
+    "es_es": "Volver"
+  },
+  "modhub.type": {
+    "en_us": "Type: ",
+    "es_es": "Tipo: "
+  },
+  "modhub.type_6cc6198d": {
+    "en_us": "Type",
+    "es_es": "Tipo"
+  },
+  "modhub.name": {
+    "en_us": "Name",
+    "es_es": "Nombre"
+  },
+  "modhub.version": {
+    "en_us": "Version",
+    "es_es": "Versión"
+  },
+  "modhub.version_f3cde000": {
+    "en_us": "Version: ",
+    "es_es": "Versión: "
+  },
+  "modhub.author": {
+    "en_us": "Author",
+    "es_es": "Autor"
+  },
+  "modhub.author_8c1505e7": {
+    "en_us": "Author: ",
+    "es_es": "Autor: "
+  },
+  "modhub.file": {
+    "en_us": "File: ",
+    "es_es": "Archivo: "
+  },
+  "modhub.source": {
+    "en_us": "Source: ",
+    "es_es": "Carga: "
+  },
+  "modhub.location": {
+    "en_us": "Location: ",
+    "es_es": "Ubicación: "
+  },
+  "modhub.yes": {
+    "en_us": "Yes",
+    "es_es": "Sí"
+  },
+  "modhub.no": {
+    "en_us": "No",
+    "es_es": "No"
+  },
+  "modhub.query_modrinth": {
+    "en_us": "Query Modrinth: ",
+    "es_es": "Consultar Modrinth: "
+  },
+  "modhub.query_curseforge": {
+    "en_us": "Query CurseForge: ",
+    "es_es": "Consultar CurseForge: "
+  },
+  "modhub.curseforge_unavailable": {
+    "en_us": "CurseForge: unavailable",
+    "es_es": "CurseForge: no disponible"
+  },
+  "modhub.mod_hub_settings": {
+    "en_us": "Mod Hub settings",
+    "es_es": "Configuración de Mod Hub"
+  },
+  "modhub.reset_detection": {
+    "en_us": "Reset detection",
+    "es_es": "Restablecer detección"
+  },
+  "modhub.automatic_detection": {
+    "en_us": "Automatic detection",
+    "es_es": "Detección automática"
+  },
+  "modhub.mod_details": {
+    "en_us": "Mod details",
+    "es_es": "Detalles del mod"
+  },
+  "modhub.select_a_mod_to_view_its_details": {
+    "en_us": "Select a mod to view its details.",
+    "es_es": "Selecciona un mod para ver sus detalles."
+  },
+  "modhub.this_mod_does_not_include_a_description": {
+    "en_us": "This mod does not include a description.",
+    "es_es": "Este mod no incluye una descripción."
+  },
+  "modhub.not_specified": {
+    "en_us": "Not specified",
+    "es_es": "No indicado"
+  },
+  "modhub.not_specified_6b6fcd99": {
+    "en_us": "Not specified",
+    "es_es": "No indicada"
+  },
+  "modhub.unavailable": {
+    "en_us": "Unavailable",
+    "es_es": "No disponible"
+  },
+  "modhub.no_results": {
+    "en_us": "No results",
+    "es_es": "Sin resultados"
+  },
+  "modhub.unnamed": {
+    "en_us": "Unnamed",
+    "es_es": "Sin nombre"
+  },
+  "modhub.no_icon": {
+    "en_us": "No icon",
+    "es_es": "Sin icono"
+  },
+  "modhub.built_in": {
+    "en_us": "Built-in",
+    "es_es": "Integrado"
+  },
+  "modhub.jar_file": {
+    "en_us": "JAR file",
+    "es_es": "Archivo JAR"
+  },
+  "modhub.bundled_with_another_mod": {
+    "en_us": "Bundled with another mod",
+    "es_es": "Incluido en otro mod"
+  },
+  "modhub.development_folder": {
+    "en_us": "Development folder",
+    "es_es": "Carpeta de desarrollo"
+  },
+  "modhub.nested_location": {
+    "en_us": "Nested location",
+    "es_es": "Ubicación anidada"
+  },
+  "modhub.warning_review_the_details": {
+    "en_us": "Warning: review the details",
+    "es_es": "Aviso: revisa los detalles"
+  },
+  "modhub.analyzing_the_file_in_the_background": {
+    "en_us": "Analyzing the file in the background...",
+    "es_es": "Analizando el archivo en segundo plano..."
+  },
+  "modhub.could_not_save_the_setting": {
+    "en_us": "Could not save the setting.",
+    "es_es": "No se pudo guardar la opción."
+  },
+  "modhub.could_not_save": {
+    "en_us": "Could not save.",
+    "es_es": "No se pudo guardar."
+  },
+  "modhub.could_not_save_check_the_config_folder_permissions": {
+    "en_us": "Could not save. Check the config folder permissions.",
+    "es_es": "No se pudo guardar. Revisa los permisos de la carpeta config."
+  },
+  "modhub.could_not_save_the_correction": {
+    "en_us": "Could not save the correction.",
+    "es_es": "No se pudo guardar la corrección."
+  },
+  "modhub.could_not_open_the_folder": {
+    "en_us": "Could not open the folder.",
+    "es_es": "No se pudo abrir la carpeta."
+  },
+  "modhub.could_not_open_the_settings": {
+    "en_us": "Could not open the settings.",
+    "es_es": "No se pudo abrir la configuración."
+  },
+  "modhub.could_not_open_this_mod_s_settings": {
+    "en_us": "Could not open this mod's settings.",
+    "es_es": "No se pudo abrir la configuración de este mod."
+  },
+  "modhub.the_mod_did_not_return_a_screen": {
+    "en_us": "The mod did not return a screen.",
+    "es_es": "El mod no devolvio una pantalla."
+  },
+  "modhub.could_not_access_the_mod_file": {
+    "en_us": "Could not access the mod file.",
+    "es_es": "No se pudo acceder al archivo del mod."
+  },
+  "modhub.could_not_analyze_the_file": {
+    "en_us": "Could not analyze the file.",
+    "es_es": "No se pudo analizar el archivo."
+  },
+  "modhub.could_not_analyze_the_file_you_can_correct_the_type_manually": {
+    "en_us": "Could not analyze the file; you can correct the type manually.",
+    "es_es": "No se pudo analizar el archivo; puedes corregir el tipo manualmente."
+  },
+  "modhub.could_not_finish_analyzing_the_file_review_the_type_manually": {
+    "en_us": "Could not finish analyzing the file; review the type manually.",
+    "es_es": "No se pudo completar el análisis del archivo; revisa el tipo manualmente."
+  },
+  "modhub.could_not_read_the_classification_metadata": {
+    "en_us": "Could not read the classification metadata.",
+    "es_es": "No se pudieron leer los metadatos de clasificación."
+  },
+  "modhub.no_readable_jar_file": {
+    "en_us": "No readable JAR file.",
+    "es_es": "No hay archivo JAR legible."
+  },
+  "modhub.there_is_no_readable_file_to_analyze": {
+    "en_us": "There is no readable file to analyze.",
+    "es_es": "No hay un archivo legible para analizar."
+  },
+  "modhub.the_mod_does_not_explicitly_declare_its_side": {
+    "en_us": "The mod does not explicitly declare its side.",
+    "es_es": "No hay una declaración explícita del lado del mod."
+  },
+  "modhub.no_explicit_declaration": {
+    "en_us": "No explicit declaration.",
+    "es_es": "Sin declaración explícita."
+  },
+  "modhub.explicit_forge_declaration": {
+    "en_us": "Explicit Forge declaration.",
+    "es_es": "Declaración explícita de Forge."
+  },
+  "modhub.explicit_client_declaration": {
+    "en_us": "Explicit client declaration.",
+    "es_es": "Declaración explícita de cliente."
+  },
+  "modhub.the_file_declares_clientsideonly_true_in_its_forge_metadata": {
+    "en_us": "The file declares clientSideOnly=true in its Forge metadata.",
+    "es_es": "El archivo declara clientSideOnly=true en sus metadatos de Forge."
+  },
+  "modhub.mod_hub_is_a_client_only_interface_mod": {
+    "en_us": "Mod Hub is a client-only interface mod.",
+    "es_es": "Mod Hub es un mod de interfaz exclusivo del cliente."
+  },
+  "modhub.client_mod": {
+    "en_us": "Client mod.",
+    "es_es": "Mod de cliente."
+  },
+  "modhub.built_in_component": {
+    "en_us": "Built-in component.",
+    "es_es": "Componente integrado."
+  },
+  "modhub.built_in_minecraft_forge_component_available_on_client_and_server": {
+    "en_us": "Built-in Minecraft/Forge component, available on client and server.",
+    "es_es": "Componente integrado de Minecraft/Forge, disponible en cliente y servidor."
+  },
+  "modhub.contains_game_data_estimated_type_subject_to_manual_review": {
+    "en_us": "Contains game data; estimated type, subject to manual review.",
+    "es_es": "Contiene datos de juego; tipo estimado, revisable manualmente."
+  },
+  "modhub.user_correction_saved_for_this_mod_id": {
+    "en_us": "User correction saved for this mod ID.",
+    "es_es": "Corrección guardada por el usuario para este identificador de mod."
+  },
+  "modhub.could_not_read_the_corrections_they_were_ignored_the_original_file_has": {
+    "en_us": "Could not read the corrections. They were ignored; the original file has been preserved.",
+    "es_es": "No se pudieron leer las correcciones. Se ignoraron; el archivo original se conserva."
+  },
+  "modhub.a_copy_of_the_damaged_file_was_saved_before_writing_the_new_correction": {
+    "en_us": "A copy of the damaged file was saved before writing the new corrections.",
+    "es_es": "Se guardó una copia del archivo dañado antes de escribir las nuevas correcciones."
+  },
+  "modhub.could_not_read_the_settings_queries_are_disabled_until_you_choose_a_se": {
+    "en_us": "Could not read the settings. Queries are disabled until you choose a setting.",
+    "es_es": "No se pudo leer la configuración. Las consultas están desactivadas hasta que elijas una opción."
+  },
+  "modhub.preparing_identification": {
+    "en_us": "Preparing identification...",
+    "es_es": "Preparando la identificación..."
+  },
+  "modhub.identification_incomplete_local_detection_is_retained": {
+    "en_us": "Identification incomplete; local detection is retained.",
+    "es_es": "Identificación incompleta; se conserva la detección local."
+  },
+  "modhub.queries_disabled_using_the_available_cache": {
+    "en_us": "Queries disabled; using the available cache.",
+    "es_es": "Consultas desactivadas; se utiliza la caché disponible."
+  },
+  "modhub.cache_is_up_to_date_no_queries_are_needed": {
+    "en_us": "Cache is up to date; no queries are needed.",
+    "es_es": "Caché al día; no hacen falta consultas."
+  },
+  "modhub.checking_new_or_pending_files_on_modrinth": {
+    "en_us": "Checking new or pending files on Modrinth...",
+    "es_es": "Consultando los archivos nuevos o pendientes en Modrinth..."
+  },
+  "modhub.updating_types_from_modrinth": {
+    "en_us": "Updating types from Modrinth...",
+    "es_es": "Actualizando los tipos desde Modrinth..."
+  },
+  "modhub.query_complete_results_saved_to_cache": {
+    "en_us": "Query complete; results saved to cache.",
+    "es_es": "Consulta terminada; resultados guardados en caché."
+  },
+  "modhub.types_are_available_for_this_session_could_not_save_the_cache_check_co": {
+    "en_us": "Types are available for this session. Could not save the cache; check config permissions.",
+    "es_es": "Tipos disponibles en esta sesión. No se pudo guardar la caché; revisa los permisos de config."
+  },
+  "modhub.query_interrupted_local_detection_is_retained": {
+    "en_us": "Query interrupted; local detection is retained.",
+    "es_es": "Consulta interrumpida; se conserva la detección local."
+  },
+  "modhub.query_temporarily_deferred_after_a_connection_failure_or_a_modrinth_ra": {
+    "en_us": "Query temporarily deferred after a connection failure or a Modrinth rate limit.",
+    "es_es": "Consulta aplazada temporalmente tras un fallo de conexión o un límite de Modrinth."
+  },
+  "modhub.modrinth_is_unavailable_cache_and_local_detection_are_retained_a_retry": {
+    "en_us": "Modrinth is unavailable. Cache and local detection are retained; a retry will follow later.",
+    "es_es": "Modrinth no está disponible. Se conservan la caché y la detección local; se reintentará más adelante."
+  },
+  "modhub.modrinth_no_exact_compatible_match_found_local_detection_is_retained_c": {
+    "en_us": "Modrinth: no exact compatible match found. Local detection is retained; checking again after 7 days.",
+    "es_es": "Modrinth: no se encontró una coincidencia compatible exacta. Se mantiene la detección local; se revisará después de 7 días."
+  },
+  "modhub.modrinth_could_not_read_the_file_local_detection_is_retained": {
+    "en_us": "Modrinth: could not read the file. Local detection is retained.",
+    "es_es": "Modrinth: no se pudo leer el archivo. Se mantiene la detección local."
+  },
+  "modhub.modrinth_file_identified": {
+    "en_us": "Modrinth: file identified; ",
+    "es_es": "Modrinth: archivo identificado; "
+  },
+  "modhub.result_saved_to_cache": {
+    "en_us": "result saved to cache.",
+    "es_es": "resultado guardado en caché."
+  },
+  "modhub.result_saved": {
+    "en_us": "result saved.",
+    "es_es": "resultado guardado."
+  },
+  "modhub.file_identified_in_this_query": {
+    "en_us": "file identified in this query.",
+    "es_es": "archivo identificado en esta consulta."
+  },
+  "modhub.results": {
+    "en_us": " results",
+    "es_es": " resultados"
+  },
+  "modhub.local_detection_is_retained": {
+    "en_us": " Local detection is retained.",
+    "es_es": " Se mantiene la detección local."
+  },
+  "modhub.data_for_the_exact_version_identified_by_its_fingerprint": {
+    "en_us": "Data for the exact version identified by its fingerprint. ",
+    "es_es": "Datos de la versión exacta identificada por su huella. "
+  },
+  "modhub.general_project_data_this_may_vary_between_versions": {
+    "en_us": "General project data; this may vary between versions. ",
+    "es_es": "Datos generales del proyecto; podrían variar entre versiones. "
+  },
+  "modhub.works_only_on_the_client": {
+    "en_us": "Works only on the client.",
+    "es_es": "Funciona únicamente en el cliente."
+  },
+  "modhub.works_on_the_server_also_usable_in_singleplayer": {
+    "en_us": "Works on the server; also usable in singleplayer.",
+    "es_es": "Funciona en el servidor; también puede usarse en un jugador."
+  },
+  "modhub.works_only_on_a_dedicated_server": {
+    "en_us": "Works only on a dedicated server.",
+    "es_es": "Funciona únicamente en un servidor dedicado."
+  },
+  "modhub.must_be_installed_on_both_client_and_server": {
+    "en_us": "Must be installed on both client and server.",
+    "es_es": "Debe instalarse tanto en el cliente como en el servidor."
+  },
+  "modhub.works_independently_on_either_side_installation_on_both_is_not_require": {
+    "en_us": "Works independently on either side; installation on both is not required.",
+    "es_es": "Funciona en cualquiera de los dos lados por separado; no es necesario instalarlo en ambos."
+  },
+  "modhub.works_independently_on_either_side_and_benefits_from_installation_on_b": {
+    "en_us": "Works independently on either side and benefits from installation on both.",
+    "es_es": "Funciona por separado en cada lado y mejora si se instala en ambos."
+  },
+  "modhub.required_on_the_client_optional_on_the_server_both_indicates_compatibi": {
+    "en_us": "Required on the client; optional on the server. Both indicates compatibility, not a requirement on both sides.",
+    "es_es": "Obligatorio en cliente; opcional en servidor. Ambos indica compatibilidad, no obligación en los dos."
+  },
+  "modhub.required_on_the_server_optional_on_the_client_both_indicates_compatibi": {
+    "en_us": "Required on the server; optional on the client. Both indicates compatibility, not a requirement on both sides.",
+    "es_es": "Obligatorio en servidor; opcional en cliente. Ambos indica compatibilidad, no obligación en los dos."
+  },
+  "modhub.works_only_in_singleplayer_no_multiplayer_type_is_assigned": {
+    "en_us": "Works only in singleplayer. No multiplayer type is assigned.",
+    "es_es": "Solo funciona en un jugador. No se asigna un tipo para multijugador."
+  },
+  "modhub.the_published_information_does_not_determine_the_type": {
+    "en_us": "The published information does not determine the type.",
+    "es_es": "La información publicada no permite determinar el tipo."
+  },
+  "modhub.project": {
+    "en_us": " Project: ",
+    "es_es": " Proyecto: "
+  },
+  "modhub.version_4ecb7ec4": {
+    "en_us": "; version: ",
+    "es_es": "; versión: "
+  },
+  "modhub.warning_modrinth_reports": {
+    "en_us": " Warning: Modrinth reports ",
+    "es_es": " Aviso: Modrinth indica "
+  },
+  "modhub.the_local_declaration_is_retained_review_the_difference": {
+    "en_us": ". The local declaration is retained; review the difference.",
+    "es_es": ". Se conserva la declaración local; revisa la diferencia."
+  },
+  "modhub.warning_selected_with_version": {
+    "en_us": " Warning: selected with version ",
+    "es_es": " Aviso: se eligió con la versión "
+  },
+  "modhub.the_installed_version_is_now": {
+    "en_us": "; the installed version is now ",
+    "es_es": "; ahora está instalada "
+  },
+  "modhub.review_the_selection": {
+    "en_us": ". Review the selection.",
+    "es_es": ". Revisa la elección."
+  },
+  "modhub.identifies_new_or_updated_files_and_caches_their_types_for_offline_use": {
+    "en_us": "Identifies new or updated files and caches their types for offline use. Only file fingerprints are sent; mods are not uploaded. Disabling queries preserves the cache. A query already in progress may finish.",
+    "es_es": "Identifica archivos nuevos o actualizados y guarda sus tipos para usarlos sin conexión. Solo envía huellas de archivos; no sube los mods. Al desactivar, se conserva la caché. Una consulta que ya esté en curso puede terminar."
+  },
+  "modhub.background_identification_and_offline_cache": {
+    "en_us": "Background identification and offline cache. ",
+    "es_es": "Identificación en segundo plano y caché sin conexión. "
+  },
+  "modhub.queries_run_in_the_background_file_fingerprints_are_sent_without_jars_": {
+    "en_us": "Queries run in the background. File fingerprints are sent, without JARs or personal paths. The cache provides results offline. ",
+    "es_es": "Las consultas se realizan en segundo plano. Se envían huellas de archivos, no los JAR ni rutas personales. La caché permite consultar resultados sin conexión. "
+  },
+  "modhub.curseforge_unavailable_api_access_and_environment_data_have_not_been_v": {
+    "en_us": "CurseForge unavailable: API access and environment data have not been validated.",
+    "es_es": "CurseForge no disponible: acceso API y datos de entorno pendientes de validar."
+  },
+  "modhub.exact_file_only_explicit_environment_labels_are_used": {
+    "en_us": "Exact file; only explicit environment labels are used.",
+    "es_es": "Archivo exacto; solo se utilizan etiquetas explícitas de entorno."
+  },
+  "modhub.no_confirmed_type_on_curseforge": {
+    "en_us": "No confirmed type on CurseForge.",
+    "es_es": "Sin tipo confirmado en CurseForge."
+  },
+  "modhub.result_from_the_curseforge_cache": {
+    "en_us": "Result from the CurseForge cache.",
+    "es_es": "Resultado de la caché de CurseForge."
+  },
+  "modhub.conflicting_matches_on_curseforge": {
+    "en_us": "Conflicting matches on CurseForge.",
+    "es_es": "Coincidencias contradictorias en CurseForge."
+  },
+  "modhub.file_too_large": {
+    "en_us": "File too large",
+    "es_es": "Archivo demasiado grande"
+  },
+  "modhub.cache_too_large": {
+    "en_us": "Cache too large",
+    "es_es": "Caché demasiado grande"
+  },
+  "modhub.empty_cache": {
+    "en_us": "Empty cache",
+    "es_es": "Caché sin entradas"
+  },
+  "modhub.settings_file_too_large": {
+    "en_us": "Settings file too large",
+    "es_es": "Configuración demasiado grande"
+  },
+  "modhub.invalid_correction": {
+    "en_us": "Invalid correction",
+    "es_es": "Corrección no válida"
+  },
+  "modhub.too_many_entries": {
+    "en_us": "Too many entries",
+    "es_es": "Demasiadas entradas"
+  },
+  "modhub.too_many_paths": {
+    "en_us": "Too many paths",
+    "es_es": "Demasiadas rutas"
+  },
+  "modhub.invalid_icon_dimensions": {
+    "en_us": "Invalid icon dimensions",
+    "es_es": "Dimensiones de icono no válidas"
+  },
+  "modhub.invalid_entry": {
+    "en_us": "Invalid entry",
+    "es_es": "Entrada no válida"
+  },
+  "modhub.unknown_icon_format": {
+    "en_us": "Unknown icon format",
+    "es_es": "Formato de icono desconocido"
+  },
+  "modhub.unknown_format": {
+    "en_us": "Unknown format",
+    "es_es": "Formato desconocido"
+  },
+  "modhub.save_interrupted": {
+    "en_us": "Save interrupted",
+    "es_es": "Guardado interrumpido"
+  },
+  "modhub.invalid_fingerprint": {
+    "en_us": "Invalid fingerprint",
+    "es_es": "Huella no válida"
+  },
+  "modhub.invalid_id": {
+    "en_us": "Invalid ID",
+    "es_es": "ID no válido"
+  },
+  "modhub.invalid_icon": {
+    "en_us": "Invalid icon",
+    "es_es": "Icono no válido"
+  },
+  "modhub.read_interrupted": {
+    "en_us": "Read interrupted",
+    "es_es": "Lectura interrumpida"
+  },
+  "modhub.batch_too_large": {
+    "en_us": "Batch too large",
+    "es_es": "Lote demasiado grande"
+  },
+  "modhub.invalid_batch": {
+    "en_us": "Invalid batch",
+    "es_es": "Lote no válido"
+  },
+  "modhub.could_not_read_the_icon": {
+    "en_us": "Could not read the icon",
+    "es_es": "No se pudo leer el icono"
+  },
+  "modhub.invalid_setting": {
+    "en_us": "Invalid setting",
+    "es_es": "Opción no válida"
+  },
+  "modhub.invalid_curseforge_response": {
+    "en_us": "Invalid CurseForge response",
+    "es_es": "Respuesta de CurseForge no válida"
+  },
+  "modhub.invalid_modrinth_response": {
+    "en_us": "Invalid Modrinth response",
+    "es_es": "Respuesta de Modrinth no válida"
+  },
+  "modhub.response_too_large": {
+    "en_us": "Response too large",
+    "es_es": "Respuesta demasiado grande"
+  },
+  "modhub.invalid_type": {
+    "en_us": "Invalid type",
+    "es_es": "Tipo no válido"
+  },
+  "modhub.unknown_format_version": {
+    "en_us": "Unknown format version",
+    "es_es": "Versión de formato desconocida"
+  },
+  "modhub.invalid_mod_version": {
+    "en_us": "Invalid mod version",
+    "es_es": "Versión del mod no válida"
+  },
+  "modhub.type_0199be60": {
+    "en_us": "\n\nType: ",
+    "es_es": "\n\nTipo: "
+  },
+  "modhub.version_e527407e": {
+    "en_us": "\n\nVersion: ",
+    "es_es": "\n\nVersión: "
+  },
+  "modhub.description": {
+    "en_us": "Search, filter and inspect installed mods.",
+    "es_es": "Busca, filtra e inspecciona los mods instalados."
+  },
+  "modhub.author_f5165c58": {
+    "en_us": "\nAuthor: ",
+    "es_es": "\nAutor: "
+  }
+}

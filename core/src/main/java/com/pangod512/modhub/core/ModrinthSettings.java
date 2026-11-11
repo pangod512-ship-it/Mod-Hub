@@ -16,14 +16,16 @@ public final class ModrinthSettings {
     this.file = file;
     if (!Files.exists(file)) return;
     try {
-      if (Files.size(file) > 4096) throw new IOException("Configuración demasiado grande");
+      if (Files.size(file) > 4096)
+        throw new IOException(
+            Messages.tr("modhub.settings_file_too_large", "Configuración demasiado grande"));
       JsonObject root =
           new JsonParser()
               .parse(new String(Files.readAllBytes(file), java.nio.charset.StandardCharsets.UTF_8))
               .getAsJsonObject();
       if (!root.get("modrinthEnabled").isJsonPrimitive()
           || !root.getAsJsonPrimitive("modrinthEnabled").isBoolean()) {
-        throw new IOException("Opción no válida");
+        throw new IOException(Messages.tr("modhub.invalid_setting", "Opción no válida"));
       }
       enabled = root.get("modrinthEnabled").getAsBoolean();
       curseforgeEnabled =
@@ -34,8 +36,10 @@ public final class ModrinthSettings {
     } catch (IOException | RuntimeException | StackOverflowError failure) {
       enabled = false;
       warning =
-          "No se pudo leer la configuración. Las consultas están desactivadas hasta que elijas una"
-              + " opción.";
+          Messages.tr(
+              "modhub.could_not_read_the_settings_queries_are_disabled_until_you_choose_a_se",
+              "No se pudo leer la configuración. Las consultas están desactivadas hasta que elijas"
+                  + " una opción.");
     }
   }
 
@@ -48,7 +52,12 @@ public final class ModrinthSettings {
   }
 
   public String warning() {
-    return warning;
+    return warning == null
+        ? null
+        : Messages.tr(
+            "modhub.could_not_read_the_settings_queries_are_disabled_until_you_choose_a_se",
+            "No se pudo leer la configuración. Las consultas están desactivadas hasta que elijas"
+                + " una opción.");
   }
 
   public void save(boolean value) throws IOException {

@@ -1,0 +1,81 @@
+def workspace = file('../..')
+def mc = findProperty('mcVersion') ?: '1.21.1'
+def target = new groovy.json.JsonSlurper().parse(new File(workspace, 'adapters/modern-targets.json')).find { it.minecraft == mc }
+
+def generated = layout.buildDirectory.dir('generated/java')
+tasks.register('preparePortSources', Sync) {
+    outputs.upToDateWhen { false }
+    inputs.file(new File(workspace, 'gradle/modern-sources.gradle'))
+    inputs.file(new File(workspace, 'gradle/neoforge-jarcontents.gradle'))
+    inputs.file(new File(workspace, 'gradle/neoforge-common.gradle'))
+    inputs.file(buildFile)
+    inputs.property 'minecraft', mc
+    from(new File(workspace, 'src/main/java')) {
+        exclude 'com/pangod512/modhub/ModHub.java'
+        exclude 'com/pangod512/modhub/client/ClientEvents.java'
+    }
+    from(new File(workspace, 'adapters/neoforge/src/main/java'))
+    into generated
+    filteringCharset = 'UTF-8'
+    filter { String line ->
+        def legacy = mc.startsWith('1.20.') && (mc.tokenize('.')[2] as int) < 5
+        def updated = line
+        if (legacy) {
+            updated = updated.replace('net.minecraftforge.client.ConfigScreenHandler', 'net.neoforged.neoforge.client.ConfigScreenHandler')
+                .replace('net.neoforged.neoforge.client.gui.IConfigScreenFactory', 'net.neoforged.neoforge.client.ConfigScreenHandler')
+                .replace('net.neoforged.fml.common.EventBusSubscriber', 'net.neoforged.fml.common.Mod.EventBusSubscriber')
+                .replace('IConfigScreenFactory.class', 'ConfigScreenHandler.ConfigScreenFactory.class')
+                .replace('(owner, parent) -> new ModHubSettingsScreen(parent))', '() -> new ConfigScreenHandler.ConfigScreenFactory((game, parent) -> new ModHubSettingsScreen(parent)))')
+        } else {
+            updated = updated.replace('net.minecraftforge.client.ConfigScreenHandler', 'net.neoforged.neoforge.client.gui.IConfigScreenFactory')
+                .replace('ConfigScreenHandler.getScreenFactoryFor', 'IConfigScreenFactory.getForMod')
+                .replace('factory.apply(minecraft, this)', 'factory.createScreen(ModList.get().getModContainerById(selected.info().getModId()).orElseThrow(), this)')
+            if (mc.startsWith('1.20.')) updated = updated.replace('factory.createScreen(ModList.get().getModContainerById(selected.info().getModId()).orElseThrow(), this)', 'factory.createScreen(minecraft, this)')
+        }
+        updated = updated
+            .replace('net.minecraftforge.forgespi', 'net.neoforged.neoforgespi')
+            .replace('net.minecraftforge.jarjar', 'net.neoforged.jarjar')
+            .replace('net.minecraftforge.fml', 'net.neoforged.fml')
+            .replace('net.minecraftforge.client', 'net.neoforged.neoforge.client')
+            .replace('"forge".equals(info.getModId())', '"neoforge".equals(info.getModId())')
+            .replace('"forge".equals(mod.getModId())', '"neoforge".equals(mod.getModId())')
+        updated
+    }
+    doLast {
+        fileTree(generated).matching { include '**/*.java' }.files.each { source ->
+            def content = adaptModernSource(source.getText('UTF-8'), mc)
+            if (mc.startsWith('1.21.') && (mc.tokenize('.')[2] as int) >= 9) content = adaptJarContentsSource(content)
+            source.setText(content, 'UTF-8')
+        }
+    }
+}
+sourceSets.main.java.setSrcDirs([generated, new File(workspace, 'core/src/main/java')])
+sourceSets.main.resources.setSrcDirs([new File(workspace, 'adapters/neoforge/src/main/resources'), new File(workspace, 'shared/src/main/resources')])
+tasks.named('compileJava') { dependsOn 'preparePortSources' }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.named('processResources') {
+    inputs.file(new File(workspace, 'gradle/neoforge-common.gradle'))
+    outputs.upToDateWhen { false }
+    inputs.property 'minecraft', mc
+    inputs.property 'neoVersion', target.neoforge
+    filesMatching('META-INF/neoforge.mods.toml') {
+        expand minecraft: mc, neoVersion: target.neoforge, modVersion: project.version
+        if (mc.startsWith('1.20.') && (mc.tokenize('.')[2] as int) < 5) {
+            name = 'mods.toml'
+            filter { String line ->
+                def firstFml = mc in ['1.20.2', '1.20.3']
+                def value = line.replace('loaderVersion="[4,)"', firstFml ? 'loaderVersion="[1,)"' : 'loaderVersion="[2,)"')
+                firstFml ? value.replace('type="required"', 'mandatory=true') : value
+            }
+        } else if (mc.startsWith('1.20.')) {
+            filter { String line -> line.replace('loaderVersion="[4,)"', 'loaderVersion="[3,)"') }
+        }
+    }
+}
+tasks.named('jar') {
+    archiveClassifier = "mc${mc}-neoforge"
+    from(new File(workspace, 'LICENSE.txt'))
+    from(new File(workspace, 'CREDITS.txt'))
+}
+
+if (project.hasProperty('portProbe')) apply from: '../../gradle/modern-probe.gradle'

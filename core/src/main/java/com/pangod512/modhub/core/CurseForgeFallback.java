@@ -30,7 +30,8 @@ public final class CurseForgeFallback {
     long retryAfter = 0;
     if (Files.exists(cacheFile))
       try {
-        if (Files.size(cacheFile) > 4194304) throw new IOException("Caché demasiado grande");
+        if (Files.size(cacheFile) > 4194304)
+          throw new IOException(Messages.tr("modhub.cache_too_large", "Caché demasiado grande"));
         JsonObject loaded =
             new JsonParser()
                 .parse(
@@ -40,7 +41,8 @@ public final class CurseForgeFallback {
         if ("curseforge".equals(loaded.get("provider").getAsString())
             && context.cacheKey().equals(loaded.get("context").getAsString())) {
           entries = loaded.getAsJsonObject("entries");
-          if (entries == null) throw new IOException("Caché sin entradas");
+          if (entries == null)
+            throw new IOException(Messages.tr("modhub.empty_cache", "Caché sin entradas"));
           retryAfter = Math.min(now + 86400, loaded.get("retryAfter").getAsLong());
         }
       } catch (IOException | RuntimeException | StackOverflowError ignored) {
@@ -58,13 +60,17 @@ public final class CurseForgeFallback {
             && now >= cached.get("checkedAt").getAsLong()
             && now - cached.get("checkedAt").getAsLong() < 604800) {
           ModType type = ModType.valueOf(cached.get("type").getAsString());
-          if (type == ModType.ALL) throw new IllegalArgumentException("Tipo no válido");
+          if (type == ModType.ALL)
+            throw new IllegalArgumentException(
+                Messages.tr("modhub.invalid_type", "Tipo no válido"));
           result.put(
               target.id(),
               new ModClassification(
                   type,
                   ModClassification.Origin.CURSEFORGE,
-                  "Resultado de la caché de CurseForge."));
+                  Messages.tr(
+                      "modhub.result_from_the_curseforge_cache",
+                      "Resultado de la caché de CurseForge.")));
         } else pending.add(target);
       } catch (IOException | RuntimeException ignored) {
         String hash = hashes.get(target.id());
@@ -83,7 +89,11 @@ public final class CurseForgeFallback {
         for (ModrinthResolver.Target target : batch) {
           ModClassification value = found.get(target.id());
           if (value == null)
-            value = ModClassification.unknown("Sin tipo confirmado en CurseForge.");
+            value =
+                ModClassification.unknown(
+                    Messages.tr(
+                        "modhub.no_confirmed_type_on_curseforge",
+                        "Sin tipo confirmado en CurseForge."));
           result.put(target.id(), value);
           JsonObject cached = new JsonObject();
           cached.addProperty("checkedAt", now);

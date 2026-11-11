@@ -1,0 +1,45 @@
+ext.adaptJarContentsSource = { String source ->
+    def updated = source.replace('import cpw.mods.niofs.union.UnionPath;', '')
+        .replace('import net.neoforged.jarjar.nio.pathfs.PathFileSystem;', '')
+        .replace('Files.newInputStream(mod.getOwningFile().getFile().findResource(mod.getLogoFile().get()))',
+            'mod.getOwningFile().getFile().getContents().openFile(mod.getLogoFile().get())')
+    if (updated.contains('record ModSource(')) {
+        updated = updated.replaceAll(/(?s)  public static ModSource from\(IModInfo info\) \{.*?\n  private static ModSource unknown\(\)/, '''  public static ModSource from(IModInfo info) {
+    if ("minecraft".equals(info.getModId()) || "neoforge".equals(info.getModId()))
+      return new ModSource(Kind.INTEGRATED, Optional.empty(), Kind.INTEGRATED.label(), "");
+    try {
+      if (info.getOwningFile() == null || info.getOwningFile().getFile() == null) return unknown();
+      var file = info.getOwningFile().getFile();
+      Path path = file.getFilePath();
+      if (path == null) return unknown();
+      var discovery = file.getDiscoveryAttributes();
+      if (discovery != null && discovery.parent() != null)
+        return new ModSource(Kind.NESTED, Optional.of(path), file.getFileName(),
+            discovery.parent().getFilePath() + "!/" + file.getFileName());
+      if (Files.isRegularFile(path) && "file".equalsIgnoreCase(path.getFileSystem().provider().getScheme()))
+        return new ModSource(Kind.JAR, Optional.of(path), file.getFileName(), path.toAbsolutePath().normalize().toString());
+      if (Files.isDirectory(path))
+        return new ModSource(Kind.DEVELOPMENT, Optional.of(path), file.getFileName(), path.toAbsolutePath().normalize().toString());
+    } catch (RuntimeException failure) {
+      com.mojang.logging.LogUtils.getLogger().debug("Mod source unavailable: {}", info.getModId(), failure);
+    }
+    return unknown();
+  }
+
+  private static ModSource unknown()''')
+        updated = updated.replaceAll(/(?s)  private static String describe\(Path path, int depth\) \{.*?\n  \}\n/, '')
+    }
+    if (updated.contains('class JarInspector')) {
+        updated = updated.replace('// The identity path is a virtual archive file. Forge provides the content\n        // through its already-open SecureJar resource root, which must not be closed here.',
+            '// JarContents belongs to the loader; visiting entries must not close it.')
+        updated = updated.replaceAll(/Path root = row\.info\(\)\.getOwningFile\(\)\.getFile\(\)\.findResource\(\);\s*walk\(root, root, signals\);/, '''row.info().getOwningFile().getFile().getContents().visitContent((name, resource) -> {
+          try { signals.accept(name); }
+          catch (IOException failure) { throw new java.io.UncheckedIOException(failure); }
+        });''')
+    }
+    if (updated.contains('class ModrinthService')) {
+        updated = updated.replaceAll(/(?s)        if \(source.kind\(\) == ModSource.Kind.NESTED\s*&&.*?else if \(source.kind\(\) != ModSource.Kind.JAR\) continue;/,
+            '        if ((source.kind() != ModSource.Kind.JAR && source.kind() != ModSource.Kind.NESTED) || file == null || !java.nio.file.Files.isRegularFile(file)) continue;')
+    }
+    updated
+}

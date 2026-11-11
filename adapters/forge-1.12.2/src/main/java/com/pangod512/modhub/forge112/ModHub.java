@@ -35,6 +35,7 @@ public final class ModHub {
 
   @Mod.EventHandler
   public void preInit(FMLPreInitializationEvent event) {
+    Messages.install(key -> net.minecraft.client.resources.I18n.format(key));
     Path config = event.getModConfigurationDirectory().toPath();
     modsDirectory = config.toAbsolutePath().getParent().resolve("mods");
     overrides = new OverrideStore(config.resolve("modhub-overrides.json"));
@@ -51,7 +52,8 @@ public final class ModHub {
             new ModClassification(
                 client ? ModType.CLIENT : ModType.SERVER,
                 ModClassification.Origin.DECLARED,
-                "Declaración explícita de Forge."));
+                Messages.tr(
+                    "modhub.explicit_forge_declaration", "Declaración explícita de Forge.")));
     }
   }
 
@@ -82,7 +84,7 @@ public final class ModHub {
     net.minecraftforge.fml.common.ModMetadata metadata = mod.getMetadata();
     String author =
         metadata == null || metadata.authorList == null || metadata.authorList.isEmpty()
-            ? "No indicado"
+            ? Messages.tr("modhub.not_specified", "No indicado")
             : String.join(", ", metadata.authorList);
     return new ModDescriptor(
         mod.getModId(),
@@ -95,18 +97,24 @@ public final class ModHub {
 
   static ModClassification classification(ModContainer mod) {
     String id = mod.getModId();
-    ModClassification local = ModClassification.unknown("Sin declaración explícita.");
+    ModClassification local =
+        ModClassification.unknown(
+            Messages.tr("modhub.no_explicit_declaration", "Sin declaración explícita."));
     if (id.equals("modhub"))
       local =
           new ModClassification(
-              ModType.CLIENT, ModClassification.Origin.DECLARED, "Mod de cliente.");
+              ModType.CLIENT,
+              ModClassification.Origin.DECLARED,
+              Messages.tr("modhub.client_mod", "Mod de cliente."));
     else if (id.equalsIgnoreCase("minecraft")
         || id.equalsIgnoreCase("forge")
         || id.equalsIgnoreCase("fml")
         || id.equalsIgnoreCase("mcp"))
       local =
           new ModClassification(
-              ModType.BOTH, ModClassification.Origin.DECLARED, "Componente integrado.");
+              ModType.BOTH,
+              ModClassification.Origin.DECLARED,
+              Messages.tr("modhub.built_in_component", "Componente integrado."));
     else if (declarations.containsKey(id)) local = declarations.get(id);
     else {
       CompletableFuture<ModClassification> analysis = analyses.get(id);

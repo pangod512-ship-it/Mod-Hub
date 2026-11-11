@@ -132,7 +132,9 @@ public final class ModrinthClient {
             if (status == 200) {
               try (java.io.InputStream input = connection.getInputStream()) {
                 byte[] bytes = Io.readLimited(input, 4_194_304);
-                if (bytes.length > 4_194_304) throw new IOException("Respuesta demasiado grande");
+                if (bytes.length > 4_194_304)
+                  throw new IOException(
+                      Messages.tr("modhub.response_too_large", "Respuesta demasiado grande"));
                 text = new String(bytes, StandardCharsets.UTF_8);
               }
             }
@@ -147,7 +149,7 @@ public final class ModrinthClient {
   public Map<String, ModrinthCache.Entry> lookup(List<String> hashes, long now) throws IOException {
     if (hashes.isEmpty()) return java.util.Collections.emptyMap();
     if (hashes.size() > 100 || hashes.stream().anyMatch(h -> !h.matches("[0-9a-f]{128}")))
-      throw new IOException("Lote no válido");
+      throw new IOException(Messages.tr("modhub.invalid_batch", "Lote no válido"));
     try {
       JsonObject request = new JsonObject();
       JsonArray array = new JsonArray();
@@ -206,7 +208,9 @@ public final class ModrinthClient {
       }
       return results;
     } catch (RuntimeException | StackOverflowError failure) {
-      throw new IOException("Respuesta de Modrinth no válida", failure);
+      throw new IOException(
+          Messages.tr("modhub.invalid_modrinth_response", "Respuesta de Modrinth no válida"),
+          failure);
     }
   }
 
@@ -284,52 +288,81 @@ public final class ModrinthClient {
     String explanation;
     switch (entry.environment()) {
       case "client_only":
-        explanation = "Funciona únicamente en el cliente.";
+        explanation =
+            Messages.tr("modhub.works_only_on_the_client", "Funciona únicamente en el cliente.");
         break;
       case "server_only":
-        explanation = "Funciona en el servidor; también puede usarse en un jugador.";
+        explanation =
+            Messages.tr(
+                "modhub.works_on_the_server_also_usable_in_singleplayer",
+                "Funciona en el servidor; también puede usarse en un jugador.");
         break;
       case "dedicated_server_only":
-        explanation = "Funciona únicamente en un servidor dedicado.";
+        explanation =
+            Messages.tr(
+                "modhub.works_only_on_a_dedicated_server",
+                "Funciona únicamente en un servidor dedicado.");
         break;
       case "client_and_server":
-        explanation = "Debe instalarse tanto en el cliente como en el servidor.";
+        explanation =
+            Messages.tr(
+                "modhub.must_be_installed_on_both_client_and_server",
+                "Debe instalarse tanto en el cliente como en el servidor.");
         break;
       case "client_only_server_optional":
         explanation =
-            "Obligatorio en cliente; opcional en servidor. Ambos indica compatibilidad, no"
-                + " obligación en los dos.";
+            Messages.tr(
+                "modhub.required_on_the_client_optional_on_the_server_both_indicates_compatibi",
+                "Obligatorio en cliente; opcional en servidor. Ambos indica compatibilidad, no"
+                    + " obligación en los dos.");
         break;
       case "server_only_client_optional":
         explanation =
-            "Obligatorio en servidor; opcional en cliente. Ambos indica compatibilidad, no"
-                + " obligación en los dos.";
+            Messages.tr(
+                "modhub.required_on_the_server_optional_on_the_client_both_indicates_compatibi",
+                "Obligatorio en servidor; opcional en cliente. Ambos indica compatibilidad, no"
+                    + " obligación en los dos.");
         break;
       case "client_or_server":
         explanation =
-            "Funciona en cualquiera de los dos lados por separado; no es necesario instalarlo en"
-                + " ambos.";
+            Messages.tr(
+                "modhub.works_independently_on_either_side_installation_on_both_is_not_require",
+                "Funciona en cualquiera de los dos lados por separado; no es necesario instalarlo"
+                    + " en ambos.");
         break;
       case "client_or_server_prefers_both":
-        explanation = "Funciona por separado en cada lado y mejora si se instala en ambos.";
+        explanation =
+            Messages.tr(
+                "modhub.works_independently_on_either_side_and_benefits_from_installation_on_b",
+                "Funciona por separado en cada lado y mejora si se instala en ambos.");
         break;
       case "singleplayer_only":
-        explanation = "Solo funciona en un jugador. No se asigna un tipo para multijugador.";
+        explanation =
+            Messages.tr(
+                "modhub.works_only_in_singleplayer_no_multiplayer_type_is_assigned",
+                "Solo funciona en un jugador. No se asigna un tipo para multijugador.");
         break;
       default:
-        explanation = "La información publicada no permite determinar el tipo.";
+        explanation =
+            Messages.tr(
+                "modhub.the_published_information_does_not_determine_the_type",
+                "La información publicada no permite determinar el tipo.");
         break;
     }
     return new ModClassification(
         type,
         ModClassification.Origin.MODRINTH,
         (entry.versionSpecific()
-                ? "Datos de la versión exacta identificada por su huella. "
-                : "Datos generales del proyecto; podrían variar entre versiones. ")
+                ? Messages.tr(
+                    "modhub.data_for_the_exact_version_identified_by_its_fingerprint",
+                    "Datos de la versión exacta identificada por su huella. ")
+                : Messages.tr(
+                    "modhub.general_project_data_this_may_vary_between_versions",
+                    "Datos generales del proyecto; podrían variar entre versiones. "))
             + explanation
-            + " Proyecto: "
+            + Messages.tr("modhub.project", " Proyecto: ")
             + entry.project()
-            + "; versión: "
+            + Messages.tr("modhub.version_4ecb7ec4", "; versión: ")
             + entry.version()
             + ".",
         "singleplayer_only".equals(entry.environment()));
@@ -345,9 +378,11 @@ public final class ModrinthClient {
             local.type(),
             local.origin(),
             local.reason()
-                + " Aviso: Modrinth indica "
-                + remote.type().label
-                + ". Se conserva la declaración local; revisa la diferencia.");
+                + Messages.tr("modhub.warning_modrinth_reports", " Aviso: Modrinth indica ")
+                + remote.type().label()
+                + Messages.tr(
+                    "modhub.the_local_declaration_is_retained_review_the_difference",
+                    ". Se conserva la declaración local; revisa la diferencia."));
       }
       return local;
     }

@@ -14,7 +14,7 @@ final class HubButton extends Button {
   }
 
   @Override
-  protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+  public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
     int x = getX(), y = getY();
     boolean highlighted = isHoveredOrFocused();
     int border = highlighted ? 0xFF8DBD69 : 0xFF696D70;

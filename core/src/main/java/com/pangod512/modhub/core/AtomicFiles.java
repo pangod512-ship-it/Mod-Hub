@@ -26,7 +26,8 @@ final class AtomicFiles {
           Thread.sleep(20L << attempt);
         } catch (InterruptedException interrupted) {
           Thread.currentThread().interrupt();
-          throw new IOException("Guardado interrumpido", interrupted);
+          throw new IOException(
+              Messages.tr("modhub.save_interrupted", "Guardado interrumpido"), interrupted);
         }
       }
     }

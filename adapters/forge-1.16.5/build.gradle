@@ -31,3 +31,5 @@ jar {
     manifest { attributes 'Implementation-Version': project.version, 'Implementation-Vendor': 'pangod512' }
     finalizedBy 'reobfJar'
 }
+
+sourceSets.main.resources.srcDir("../../shared/src/main/resources")

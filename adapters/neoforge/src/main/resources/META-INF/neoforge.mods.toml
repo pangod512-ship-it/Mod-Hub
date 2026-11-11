@@ -1,0 +1,21 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="All Rights Reserved"
+[[mods]]
+modId="modhub"
+version="${modVersion}"
+displayName="Mod Hub"
+authors="pangod512"
+description="Search, filter and inspect installed mods."
+[[dependencies.modhub]]
+modId="neoforge"
+type="required"
+versionRange="[${neoVersion},)"
+ordering="NONE"
+side="CLIENT"
+[[dependencies.modhub]]
+modId="minecraft"
+type="required"
+versionRange="[${minecraft}]"
+ordering="NONE"
+side="CLIENT"

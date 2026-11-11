@@ -14,6 +14,9 @@ minecraft {
         client {
             workingDirectory project.file('run')
             property 'forge.logging.console.level', 'info'
+            if (project.hasProperty('portProbe')) {
+                property 'modhub.legacyProbe.directory', file("$buildDir/port-probe").absolutePath
+            }
         }
     }
 }
@@ -30,10 +33,19 @@ task prepareLegacyRuntime(type: Copy) {
     include 'net/minecraftforge/fml/relauncher/Side.class'
     into "$buildDir/legacy-runtime"
 }
+
+task prepareLegacyMod(type: Sync) {
+    dependsOn 'classes'
+    from sourceSets.main.output
+    into "$buildDir/legacy-mod"
+}
 tasks.withType(JavaExec).all {
     if(name == 'runClient') {
-        dependsOn prepareLegacyRuntime
-        doFirst { classpath = files("$buildDir/legacy-runtime") + classpath }
+        dependsOn prepareLegacyRuntime, prepareLegacyMod
+        doFirst {
+            classpath = files("$buildDir/legacy-runtime", "$buildDir/legacy-mod") +
+                classpath.filter { !sourceSets.main.output.files.contains(it) }
+        }
     }
 }
 task prepareLegacySources {
@@ -63,3 +75,5 @@ jar {
     finalizedBy 'reobfJar'
 }
 
+
+sourceSets.main.resources.srcDir("../../shared/src/main/resources")

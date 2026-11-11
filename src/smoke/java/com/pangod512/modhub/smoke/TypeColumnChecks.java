@@ -34,6 +34,14 @@ final class TypeColumnChecks {
                 int.class, int.class, int.class, int.class, int.class, int.class, int.class, boolean.class, float.class);
         render.setAccessible(true);
         render.invoke(entry, graphics, 0, 110, table.getRowLeft(), table.getRowWidth(), rowHeight, 0, 0, false, 0F);
+        var rowField = entry.getClass().getDeclaredField("row");
+        rowField.setAccessible(true);
+        var mod = (com.pangod512.modhub.client.ModRow) rowField.get(entry);
+        if (!mod.type().hasBadge()) {
+            require(graphics.outlines.stream().noneMatch(rect -> (rect.color >>> 24) == 0x60),
+                    "La fila sin determinar no dibuja etiqueta de Tipo " + screen.width, results);
+            return results;
+        }
         Rect row = new Rect(table.getRowLeft(), 110, table.getRowWidth(), rowHeight - 1, 0);
         Rect badge = graphics.outlines.stream().filter(rect -> (rect.color >>> 24) == 0x60)
                 .findFirst().orElseThrow(() -> new AssertionError("Falta la etiqueta de Tipo"));
@@ -60,8 +68,24 @@ final class TypeColumnChecks {
         var header = ModHubScreen.class.getDeclaredMethod("drawTableHeader", GuiGraphics.class);
         header.setAccessible(true);
         header.invoke(screen, graphics);
-        Text title = graphics.texts.stream().filter(text -> text.value.equals("Tipo")).findFirst().orElseThrow();
+        Text title = graphics.texts.stream().filter(text -> text.value.equals(Messages.tr("modhub.type_6cc6198d", "Tipo"))).findFirst().orElseThrow();
         require(title.x == badge.x + 4, "El encabezado Tipo se alinea con sus etiquetas " + screen.width, results);
+        return results;
+    }
+
+    static List<String> verifyUnknown(ModHubScreen screen) throws Exception {
+        var graphics = new RecordingGraphics();
+        var badge = ModHubScreen.class.getDeclaredMethod("badge", GuiGraphics.class,
+                ModClassification.class, int.class, int.class, int.class);
+        badge.setAccessible(true);
+        badge.invoke(screen, graphics, ModClassification.unknown("fixture"), 10, 10, 100);
+        var results = new ArrayList<String>();
+        require(graphics.fills.isEmpty() && graphics.outlines.isEmpty() && graphics.texts.isEmpty(),
+                "Sin determinar no dibuja distintivo en la tabla", results);
+        badge.invoke(screen, graphics, new ModClassification(ModType.CLIENT,
+                ModClassification.Origin.DECLARED, "fixture"), 10, 10, 100);
+        require(graphics.outlines.size() == 1 && !graphics.texts.isEmpty(),
+                "Cliente conserva su distintivo", results);
         return results;
     }
 

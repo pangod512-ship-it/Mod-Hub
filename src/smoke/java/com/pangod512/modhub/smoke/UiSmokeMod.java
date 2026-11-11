@@ -50,6 +50,7 @@ public final class UiSmokeMod {
     private String pendingScreenshot;
     private int step, ticks;
     private boolean finished;
+    private boolean languageRequested;
     private OverrideStore realOverrides;
     private ModrinthResolver.Snapshot realRemote;
     private int matrixIndex;
@@ -93,6 +94,14 @@ public final class UiSmokeMod {
                     minecraft.setScreen(new TitleScreen());
                 }
                 if (!(minecraft.screen instanceof TitleScreen)) return;
+                if (!languageRequested) {
+                    languageRequested = true;
+                    String locale = System.getProperty("modhub.smoke.language", "es_es");
+                    minecraft.getLanguageManager().setSelected(locale);
+                    minecraft.options.languageCode = locale;
+                    minecraft.reloadResourcePacks();
+                    return;
+                }
                 verifyRuntime();
                 minecraft.options.guiScale().set(2);
                 minecraft.resizeDisplay();
@@ -118,6 +127,7 @@ public final class UiSmokeMod {
                 check(screen.keyPressed(70, 0, 2) && search().isFocused(), "Ctrl+F enfoca la busqueda usando los modificadores del evento");
                 search().setValue("Ejemplo contenido");
                 results.addAll(TypeColumnChecks.verify(screen, table()));
+                results.addAll(TypeColumnChecks.verifyUnknown(screen));
                 search().setValue("minecraft");
                 check(table().children().size() == 1, "Busqueda por ID");
                 if (Boolean.getBoolean("modhub.smoke.vanillaLayout")) results.addAll(TypeColumnChecks.verifyCounter(screen, true));
@@ -127,11 +137,11 @@ public final class UiSmokeMod {
                 configButton().onPress();
                 check(minecraft.screen.getClass().getSimpleName().equals("ModHubSettingsScreen"), "Se abre la configuracion real de Modrinth");
                 boolean wasEnabled = ModrinthService.get().settings().enabled();
-                pressCurrent("Consultar Modrinth: " + (wasEnabled ? "Sí" : "No"));
+                pressCurrent(Messages.tr("modhub.query_modrinth", "Consultar Modrinth: ") + (wasEnabled ? Messages.tr("modhub.yes", "Sí") : Messages.tr("modhub.no", "No")));
                 check(ModrinthService.get().settings().enabled() != wasEnabled, "La interfaz permite activar o desactivar las consultas");
                 check(new ModrinthSettings(net.minecraftforge.fml.loading.FMLPaths.CONFIGDIR.get().resolve("modhub-settings.json")).enabled() != wasEnabled,
                         "La opcion cambiada desde la pantalla persiste en disco");
-                pressCurrent("Consultar Modrinth: " + (wasEnabled ? "No" : "Sí"));
+                pressCurrent(Messages.tr("modhub.query_modrinth", "Consultar Modrinth: ") + (wasEnabled ? Messages.tr("modhub.no", "No") : Messages.tr("modhub.yes", "Sí")));
                 minecraft.screen.onClose();
                 check(minecraft.screen == screen, "Volver desde ajustes conserva la pantalla de mods");
                 search().setValue("fixture_unknown");
@@ -206,7 +216,7 @@ public final class UiSmokeMod {
                 check(field("selected", ModRow.class).info().getModId().equals("modhub"), "Se conserva la seleccion");
                 pendingScreenshot = "05-configurar.png";
             } else if (step == 7) {
-                button("Volver").onPress();
+                button(Messages.tr("modhub.back", "Volver")).onPress();
                 check(minecraft.screen == parent, "Volver regresa al menu anterior");
                 Object logos = field("logos", Object.class);
                 Field cache = logos.getClass().getDeclaredField("logos");
@@ -261,7 +271,7 @@ public final class UiSmokeMod {
                 search().setValue("Mod Hub");
                 field("correctionButton", Button.class).onPress();
                 check(minecraft.screen.getClass().getSimpleName().equals("TypeOverrideScreen"), "Se abre el selector de correccion manual");
-                pressCurrent("Ambos");
+                pressCurrent(ModType.BOTH.label());
                 check(minecraft.screen == screen && field("selected", ModRow.class).type() == ModType.BOTH,
                         "Elegir Ambos actualiza la fila y regresa a la lista");
                 check(field("selected", ModRow.class).classification().origin() == ModClassification.Origin.MANUAL,
@@ -276,7 +286,7 @@ public final class UiSmokeMod {
                 chooseFilter(ModType.BOTH);
                 check(table().children().size() == 1, "El filtro Ambos incluye la correccion manual y respeta la busqueda");
                 field("correctionButton", Button.class).onPress();
-                pressCurrent("Restablecer detección");
+                pressCurrent(Messages.tr("modhub.reset_detection", "Restablecer detección"));
                 check(table().children().isEmpty() && !field("correctionButton", Button.class).visible,
                         "Restablecer quita del filtro al mod que ya no coincide sin dejar seleccion oculta");
                 chooseFilter(ModType.ALL);
@@ -297,7 +307,7 @@ public final class UiSmokeMod {
                 Files.writeString(blocker, "bloqueo");
                 setField("overrides", new OverrideStore(blocker.resolve("modhub-overrides.json")));
                 field("correctionButton", Button.class).onPress();
-                pressCurrent("Solo servidor");
+                pressCurrent(ModType.SERVER.label());
                 check(minecraft.screen != screen && minecraft.screen.getClass().getSimpleName().equals("TypeOverrideScreen"),
                         "Si guardar falla, el selector permanece abierto y conserva el tipo anterior");
                 var errorField = minecraft.screen.getClass().getDeclaredField("error");
@@ -324,12 +334,12 @@ public final class UiSmokeMod {
                 pendingScreenshot = "11-modrinth.png";
             } else if (step == 16) {
                 field("correctionButton", Button.class).onPress();
-                pressCurrent("Solo cliente");
+                pressCurrent(ModType.CLIENT.label());
                 chooseFilter(ModType.ALL);
                 check(field("selected", ModRow.class).type() == ModType.CLIENT
                                 && field("selected", ModRow.class).classification().origin() == ModClassification.Origin.MANUAL,
                         "La correccion manual desde la interfaz gana a Modrinth");
-                field("correctionButton", Button.class).onPress(); pressCurrent("Restablecer detección");
+                field("correctionButton", Button.class).onPress(); pressCurrent(Messages.tr("modhub.reset_detection", "Restablecer detección"));
                 check(field("selected", ModRow.class).type() == ModType.SERVER
                                 && field("selected", ModRow.class).classification().origin() == ModClassification.Origin.MODRINTH,
                         "Restablecer recupera el tipo de Modrinth sin hacer una consulta adicional");
@@ -364,7 +374,7 @@ public final class UiSmokeMod {
                     field("analyses", java.util.Map.class).clear();
                     setField("allMods", realRows.rows);
                     screen.resize(minecraft, screen.width, screen.height);
-                    search().setValue("farmer");
+                    search().setValue(realRows.rows.get(realRows.rows.size() / 2).info().getModId());
                     check(!table().children().isEmpty(), "La busqueda funciona con nombres reales del modpack");
                     search().setValue("");
                     results.addAll(TypeColumnChecks.verify(screen, table()));

@@ -1,0 +1,83 @@
+def workspace = file('../..')
+def mc = findProperty('mcVersion') ?: '1.20'
+def loader = findProperty('modLoader') ?: 'forge'
+def target = new groovy.json.JsonSlurper().parse(file('../modern-targets.json')).find { it.minecraft == mc }
+def generated = layout.buildDirectory.dir('generated/java')
+tasks.register('preparePortSources', Sync) {
+    outputs.upToDateWhen { false }
+    inputs.file(new File(workspace, 'gradle/modern-sources.gradle'))
+    inputs.file(new File(workspace, 'gradle/forge-events.gradle'))
+    inputs.file(new File(workspace, 'gradle/forge-common.gradle'))
+    inputs.file(buildFile)
+    inputs.properties minecraft: mc, loader: loader
+    from(new File(workspace, 'src/main/java'))
+    into generated
+    filteringCharset = 'UTF-8'
+    filter { String line ->
+        def injectContext = project.hasProperty('forgeNext') && mc != '1.21'
+        def updated = injectContext ? line : line.replace('public ModHub(FMLJavaModLoadingContext context) {',
+            'public ModHub() { FMLJavaModLoadingContext context = FMLJavaModLoadingContext.get();')
+        if (loader == 'neoforge') {
+            updated = updated.replace('ModList.get().isLoaded("neoforge") ? "neoforge" : "forge"', '"neoforge"')
+        }
+        updated
+    }
+    doLast {
+        fileTree(generated).matching { include '**/*.java' }.files.each { source ->
+            def content = adaptModernSource(source.getText('UTF-8'), mc)
+            if (loader == 'forge' && mc.startsWith('1.21.') && (mc.tokenize('.')[2] as int) >= 6) content = adaptForgeEvents(content)
+            source.setText(content, 'UTF-8')
+        }
+    }
+}
+sourceSets.main.java.setSrcDirs([generated, new File(workspace, 'core/src/main/java')])
+sourceSets.main.resources.setSrcDirs([new File(workspace, 'src/main/resources'), new File(workspace, 'shared/src/main/resources')])
+tasks.named('compileJava') { dependsOn 'preparePortSources' }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.named('processResources') {
+    def major = target[loader].split('-').last().split('\\.')[0]
+    def props = [minecraft_version: mc, minecraft_version_range: "[${mc}]",
+                 forge_version: target[loader].split('-').last(), forge_version_range: "[${major},)",
+                 loader_version_range: "[${major},)", mod_id: 'modhub', mod_name: 'Mod Hub',
+                 mod_license: 'All Rights Reserved', mod_version: version,
+                 mod_authors: 'pangod512', mod_description: 'Search, filter and inspect installed mods.']
+    inputs.properties props
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) { expand props + [project: project] }
+}
+tasks.named('jar') {
+    archiveClassifier = "mc${mc}-${loader}"
+    from(new File(workspace, 'LICENSE.txt'))
+    from(new File(workspace, 'CREDITS.txt'))
+    if (!project.hasProperty('forgeNext')) finalizedBy 'reobfJar'
+}
+
+if (loader == 'forge' && !(mc in ['1.20', '1.20.1', '1.20.2']) && !project.hasProperty('portProbe')) {
+    def runtimeMain = layout.buildDirectory.dir('runtime-main')
+    def prepareRuntime = tasks.register('prepareRuntimeMod', Sync) {
+        dependsOn 'classes'
+        from(sourceSets.main.output)
+        into runtimeMain
+    }
+    if (!project.hasProperty('forgeNext')) {
+        def runtimeSources = sourceSets.create('mainRuntime')
+        runtimeSources.java.setSrcDirs([])
+        runtimeSources.resources.setSrcDirs([])
+        runtimeSources.output.classesDirs.setFrom([])
+        runtimeSources.output.resourcesDir = runtimeMain.get().asFile
+        runtimeSources.output.dir([builtBy: prepareRuntime], runtimeMain)
+        def separateOutputs = sourceSets.main.output.files
+        runtimeSources.runtimeClasspath = files(runtimeMain) + sourceSets.main.runtimeClasspath.filter { !separateOutputs.contains(it) }
+        minecraft.runs.client {
+            mods.clear()
+            setSources([runtimeSources])
+        }
+    }
+    tasks.matching { it.name == 'runClient' }.configureEach {
+        dependsOn prepareRuntime
+        doFirst {
+            def separateOutputs = sourceSets.main.output.files
+            classpath = files(runtimeMain) + classpath.filter { !separateOutputs.contains(it) }
+        }
+    }
+}
+

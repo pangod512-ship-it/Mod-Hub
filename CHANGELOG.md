@@ -1,5 +1,12 @@
 # Historial de cambios
 
+## En desarrollo
+
+- La interfaz usa el idioma de Minecraft en inglés y en siete variantes de español. En otros idiomas muestra sus textos en inglés sin cambiar el idioma del juego. Conserva las descripciones de terceros tal como las proporciona cada mod.
+- La columna Tipo deja en blanco los mods sin determinar. El filtro, los detalles y la corrección manual conservan esa categoría.
+- El menú de ajustes deja de mostrar el control de CurseForge. La identificación opcional sigue usando Modrinth.
+- Se añadieron adaptadores para versiones recientes de Forge y NeoForge. Las 35 combinaciones de la [matriz moderna](adapters/modern-targets.json) pasaron 85 comprobaciones dentro de Minecraft por destino. Esta ampliación todavía no tiene JAR publicados.
+
 ## 1.1.1 estable
 
 Disponible para Minecraft Forge 1.12.2, 1.16.5, 1.18.2, 1.19.2 y 1.20.1, con un JAR independiente para cada versión.

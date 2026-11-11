@@ -15,6 +15,9 @@ import net.minecraftforge.fml.common.Mod;
 public final class PortProbe {
   private static int ticks, stage, checks;
   private static boolean done;
+  private static int languageIndex;
+  private static boolean languageRequested;
+  private static final String[] LANGUAGES = {"en_us", "es_mx", "fr_fr", "ja_jp", "en_us"};
   private static Screen parent;
   private static final Path OUTPUT = Paths.get("../build/port-probe");
 
@@ -29,6 +32,27 @@ public final class PortProbe {
     checks++;
   }
 
+  private static boolean languageChecks(Minecraft mc) {
+    if (languageIndex == LANGUAGES.length) return true;
+    String locale = LANGUAGES[languageIndex];
+    if (!languageRequested) {
+      mc.options.languageCode = locale;
+      mc.getLanguageManager().setSelected(mc.getLanguageManager().getLanguage(locale));
+      languageRequested = true;
+      mc.reloadResourcePacks();
+      return false;
+    }
+    boolean spanish = locale.startsWith("es_");
+    check(mc.options.languageCode.equals(locale), "Minecraft retains " + locale);
+    check(net.minecraft.client.resources.language.I18n.get("modhub.client").equals(spanish ? "Cliente" : "Client"), "Native fallback in " + locale);
+    check(com.pangod512.modhub.core.ModType.CLIENT.label().equals(spanish ? "Cliente" : "Client"), "Client label in " + locale);
+    check(com.pangod512.modhub.core.ModType.SERVER.label().equals(spanish ? "Servidor" : "Server"), "Server label in " + locale);
+    check(!com.pangod512.modhub.core.ModType.UNKNOWN.hasBadge(), "Unknown has no badge in " + locale);
+    languageIndex++;
+    languageRequested = false;
+    return false;
+  }
+
   @SubscribeEvent
   public static void tick(TickEvent.ClientTickEvent e) {
     if (done || e.phase != TickEvent.Phase.END || ++ticks % 20 != 0) return;
@@ -41,6 +65,7 @@ public final class PortProbe {
             && mc.screen.getClass().getSimpleName().equals("AccessibilityOnboardingScreen"))
           mc.setScreen(new net.minecraft.client.gui.screens.TitleScreen());
         if (!(mc.screen instanceof net.minecraft.client.gui.screens.TitleScreen)) return;
+        if (!languageChecks(mc)) return;
         mc.options.guiScale = 2;
         mc.resizeDisplay();
         parent = mc.screen;

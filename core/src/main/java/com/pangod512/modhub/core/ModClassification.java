@@ -61,6 +61,19 @@ public final class ModClassification {
     Origin(String label) {
       this.label = label;
     }
+
+    public String label() {
+      switch (this) {
+        case DECLARED:
+          return Messages.tr("modhub.declared", label);
+        case ESTIMATED:
+          return Messages.tr("modhub.estimated", label);
+        case UNKNOWN:
+          return Messages.tr("modhub.undetermined", label);
+        default:
+          return label;
+      }
+    }
   }
 
   public static ModClassification unknown(String reason) {
@@ -73,6 +86,6 @@ public final class ModClassification {
   }
 
   public String label() {
-    return type.label + (origin == Origin.ESTIMATED ? " ~" : "");
+    return type.label() + (origin == Origin.ESTIMATED ? " ~" : "");
   }
 }

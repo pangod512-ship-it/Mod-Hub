@@ -1,0 +1,16 @@
+ext.adaptForgeEvents = { String source ->
+    def updated = source
+    if (updated.contains('class ModHub {')) {
+        updated = updated.replace('context.getModEventBus().addListener(this::onClientSetup);',
+            'FMLClientSetupEvent.getBus(context.getModBusGroup()).addListener(this::onClientSetup);')
+            .replace('Messages.install(key -> net.minecraft.client.resources.language.I18n.get(key));',
+                'Messages.install(key -> net.minecraft.client.resources.language.I18n.get(key));\n' +
+                '          net.minecraftforge.client.event.ScreenEvent.Opening.BUS.addListener(com.pangod512.modhub.client.ClientEvents::onScreenOpening);')
+    }
+    if (updated.contains('class ClientEvents')) {
+        updated = updated.replace('import net.minecraftforge.eventbus.api.SubscribeEvent;', '')
+            .replaceAll(/(?s)@Mod\.EventBusSubscriber\(.*?\)\s*/, '')
+            .replace('@SubscribeEvent', '')
+    }
+    updated
+}

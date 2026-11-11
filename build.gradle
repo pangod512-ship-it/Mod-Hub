@@ -215,9 +215,9 @@ tasks.withType(JavaCompile).configureEach {
 
 // Compile the portable core into each standalone JAR. Packaged-JAR verification can disable this source set.
 sourceSets.main.java.srcDir("core/src/main/java")
+sourceSets.main.resources.srcDir("shared/src/main/resources")
 
 // Optional in-game UI checks; this source set is never included in the release jar.
 if (providers.gradleProperty('uiSmokeTest').isPresent()) {
     apply from: 'gradle/ui-smoke.gradle'
 }
-

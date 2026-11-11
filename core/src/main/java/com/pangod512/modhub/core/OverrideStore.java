@@ -48,13 +48,14 @@ public final class OverrideStore {
   private final Path file;
   private Map<String, Choice> choices = new HashMap<>();
   private boolean damaged;
-  private String warning;
+  private java.util.function.Supplier<String> warning;
 
   public OverrideStore(Path file) {
     this.file = file;
     if (!Files.exists(file)) return;
     try {
-      if (Files.size(file) > 1_048_576) throw new IOException("Archivo demasiado grande");
+      if (Files.size(file) > 1_048_576)
+        throw new IOException(Messages.tr("modhub.file_too_large", "Archivo demasiado grande"));
       JsonObject root =
           new JsonParser()
               .parse(new String(Files.readAllBytes(file), StandardCharsets.UTF_8))
@@ -62,17 +63,20 @@ public final class OverrideStore {
       if (!root.get("schema").isJsonPrimitive()
           || !root.getAsJsonPrimitive("schema").isNumber()
           || !root.get("schema").getAsString().equals("1"))
-        throw new IOException("Versión de formato desconocida");
+        throw new IOException(
+            Messages.tr("modhub.unknown_format_version", "Versión de formato desconocida"));
       Map<String, Choice> loaded = new HashMap<>();
       for (Map.Entry<String, JsonElement> entry : root.getAsJsonObject("overrides").entrySet()) {
         if (!entry.getKey().matches("[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}"))
-          throw new IOException("ID no válido");
+          throw new IOException(Messages.tr("modhub.invalid_id", "ID no válido"));
         JsonObject value = entry.getValue().getAsJsonObject();
         ModType type = ModType.valueOf(value.get("type").getAsString());
-        if (type == ModType.ALL) throw new IOException("Tipo no válido");
+        if (type == ModType.ALL)
+          throw new IOException(Messages.tr("modhub.invalid_type", "Tipo no válido"));
         if (!value.get("version").isJsonPrimitive()
             || !value.getAsJsonPrimitive("version").isString()) {
-          throw new IOException("Versión del mod no válida");
+          throw new IOException(
+              Messages.tr("modhub.invalid_mod_version", "Versión del mod no válida"));
         }
         loaded.put(entry.getKey(), new Choice(type, value.get("version").getAsString()));
       }
@@ -80,13 +84,17 @@ public final class OverrideStore {
     } catch (IOException | RuntimeException | StackOverflowError exception) {
       damaged = true;
       warning =
-          "No se pudieron leer las correcciones. Se ignoraron; el archivo original se conserva.";
+          () ->
+              Messages.tr(
+                  "modhub.could_not_read_the_corrections_they_were_ignored_the_original_file_has",
+                  "No se pudieron leer las correcciones. Se ignoraron; el archivo original se"
+                      + " conserva.");
       CoreLog.warn("No se pudo leer {}", file, exception);
     }
   }
 
   public String warning() {
-    return warning;
+    return warning == null ? null : warning.get();
   }
 
   public Map<String, Choice> snapshot() {
@@ -96,14 +104,17 @@ public final class OverrideStore {
   public ModClassification apply(String id, String version, ModClassification automatic) {
     Choice choice = choices.get(id);
     if (choice == null) return automatic;
-    String reason = "Corrección guardada por el usuario para este identificador de mod.";
+    String reason =
+        Messages.tr(
+            "modhub.user_correction_saved_for_this_mod_id",
+            "Corrección guardada por el usuario para este identificador de mod.");
     if (!choice.version().equals(version)) {
       reason +=
-          " Aviso: se eligió con la versión "
+          Messages.tr("modhub.warning_selected_with_version", " Aviso: se eligió con la versión ")
               + choice.version()
-              + "; ahora está instalada "
+              + Messages.tr("modhub.the_installed_version_is_now", "; ahora está instalada ")
               + version
-              + ". Revisa la elección.";
+              + Messages.tr("modhub.review_the_selection", ". Revisa la elección.");
     }
     return new ModClassification(choice.type(), ModClassification.Origin.MANUAL, reason);
   }
@@ -111,7 +122,7 @@ public final class OverrideStore {
   /** Null restores automatic detection. Memory changes only after a successful write. */
   public void save(String id, String version, ModType type) throws IOException {
     if (!id.matches("[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}") || type == ModType.ALL) {
-      throw new IOException("Corrección no válida");
+      throw new IOException(Messages.tr("modhub.invalid_correction", "Corrección no válida"));
     }
     Map<String, Choice> updated = new HashMap<>(choices);
     if (type == null) updated.remove(id);
@@ -153,7 +164,11 @@ public final class OverrideStore {
     choices = updated;
     warning =
         damaged
-            ? "Se guardó una copia del archivo dañado antes de escribir las nuevas correcciones."
+            ? () ->
+                Messages.tr(
+                    "modhub.a_copy_of_the_damaged_file_was_saved_before_writing_the_new_correction",
+                    "Se guardó una copia del archivo dañado antes de escribir las nuevas"
+                        + " correcciones.")
             : null;
     damaged = false;
   }

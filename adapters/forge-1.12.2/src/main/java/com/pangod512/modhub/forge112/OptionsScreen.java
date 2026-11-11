@@ -21,11 +21,13 @@ public final class OptionsScreen extends GuiScreen {
             48,
             260,
             20,
-            "Consultar Modrinth: " + (ModHub.identification.settings().enabled() ? "Sí" : "No")));
-    GuiButton cf = new GuiButton(1, width / 2 - 130, 76, 260, 20, "CurseForge: no disponible");
-    cf.enabled = CurseForgeAccess.available();
-    buttonList.add(cf);
-    buttonList.add(new GuiButton(2, width / 2 - 100, height - 30, 200, 20, "Volver"));
+            Messages.tr("modhub.query_modrinth", "Consultar Modrinth: ")
+                + (ModHub.identification.settings().enabled()
+                    ? Messages.tr("modhub.yes", "Sí")
+                    : Messages.tr("modhub.no", "No"))));
+    buttonList.add(
+        new GuiButton(
+            2, width / 2 - 100, height - 30, 200, 20, Messages.tr("modhub.back", "Volver")));
   }
 
   protected void actionPerformed(GuiButton button) {
@@ -43,7 +45,7 @@ public final class OptionsScreen extends GuiScreen {
       }
       if (button.id == 2) mc.displayGuiScreen(parent);
     } catch (IOException failure) {
-      error = "No se pudo guardar la opción.";
+      error = Messages.tr("modhub.could_not_save_the_setting", "No se pudo guardar la opción.");
     }
   }
 
@@ -54,13 +56,21 @@ public final class OptionsScreen extends GuiScreen {
 
   public void drawScreen(int x, int y, float partial) {
     drawDefaultBackground();
-    drawCenteredString(fontRenderer, "Configuración de Mod Hub", width / 2, 16, 0x96CD70);
+    drawCenteredString(
+        fontRenderer,
+        Messages.tr("modhub.mod_hub_settings", "Configuración de Mod Hub"),
+        width / 2,
+        16,
+        0x96CD70);
     int lineY = 110;
     for (String line :
         fontRenderer.listFormattedStringToWidth(
-            "Las consultas se realizan en segundo plano. Se envían huellas de archivos, no los JAR"
-                + " ni rutas personales. La caché permite consultar resultados sin conexión. "
-                + CurseForgeAccess.reason()
+            Messages.tr(
+                    "modhub.queries_run_in_the_background_file_fingerprints_are_sent_without_jars_",
+                    "Las consultas se realizan en segundo plano. Se envían huellas de archivos, no"
+                        + " los JAR ni rutas personales. La caché permite consultar resultados sin"
+                        + " conexión. ")
+                + ModHub.identification.snapshot().status()
                 + " "
                 + error,
             Math.max(60, width - 40))) {

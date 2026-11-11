@@ -35,7 +35,7 @@ public record ModRow(
             .getConfigElement("authors")
             .map(Object::toString)
             .filter(s -> !s.isBlank())
-            .orElse("No indicado");
+            .orElse(Messages.tr("modhub.not_specified", "No indicado"));
     return new ModRow(
         info,
         clean(info.getDisplayName()),

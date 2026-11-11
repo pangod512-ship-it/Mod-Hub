@@ -34,12 +34,23 @@ public final class HubScreen extends GuiScreen {
     search.setMaxStringLength(160);
     search.setText(query);
     buttonList.clear();
-    buttonList.add(new GuiButton(0, leftWidth - 96, 22, 106, 20, "Tipo: " + filter.label));
+    buttonList.add(
+        new GuiButton(
+            0, leftWidth - 96, 22, 106, 20, Messages.tr("modhub.type", "Tipo: ") + filter.label()));
     int w = Math.max(40, (width - 40) / 3);
-    buttonList.add(new GuiButton(1, 10, height - 27, w, 20, "Abrir carpeta de mods"));
-    configure = new GuiButton(2, 20 + w, height - 27, w, 20, "Configurar");
+    buttonList.add(
+        new GuiButton(
+            1,
+            10,
+            height - 27,
+            w,
+            20,
+            Messages.tr("modhub.open_mods_folder", "Abrir carpeta de mods")));
+    configure =
+        new GuiButton(2, 20 + w, height - 27, w, 20, Messages.tr("modhub.configure", "Configurar"));
     buttonList.add(configure);
-    buttonList.add(new GuiButton(3, width - w - 10, height - 27, w, 20, "Volver"));
+    buttonList.add(
+        new GuiButton(3, width - w - 10, height - 27, w, 20, Messages.tr("modhub.back", "Volver")));
     correct =
         new GuiButton(
             4,
@@ -47,7 +58,7 @@ public final class HubScreen extends GuiScreen {
             listBottom - 22,
             Math.max(40, width - leftWidth - 30),
             20,
-            "Corregir tipo");
+            Messages.tr("modhub.correct_type", "Corregir tipo"));
     buttonList.add(correct);
     refresh();
   }
@@ -78,7 +89,7 @@ public final class HubScreen extends GuiScreen {
   protected void actionPerformed(GuiButton button) {
     if (button.id == 0) {
       filter = ModType.values()[(filter.ordinal() + 1) % ModType.values().length];
-      button.displayString = "Tipo: " + filter.label;
+      button.displayString = Messages.tr("modhub.type", "Tipo: ") + filter.label();
       listOffset = 0;
       refresh();
     }
@@ -86,7 +97,7 @@ public final class HubScreen extends GuiScreen {
       try {
         java.awt.Desktop.getDesktop().open(ModHub.modsDirectory.toFile());
       } catch (Exception failure) {
-        error = "No se pudo abrir la carpeta.";
+        error = Messages.tr("modhub.could_not_open_the_folder", "No se pudo abrir la carpeta.");
       }
     if (button.id == 2 && selected != null)
       try {
@@ -94,7 +105,8 @@ public final class HubScreen extends GuiScreen {
         if (factory != null && factory.hasConfigGui())
           mc.displayGuiScreen(factory.createConfigGui(this));
       } catch (RuntimeException failure) {
-        error = "No se pudo abrir la configuración.";
+        error =
+            Messages.tr("modhub.could_not_open_the_settings", "No se pudo abrir la configuración.");
       }
     if (button.id == 3) mc.displayGuiScreen(parent);
     if (button.id == 4 && selected != null) mc.displayGuiScreen(new TypeScreen(this, selected));
@@ -183,11 +195,21 @@ public final class HubScreen extends GuiScreen {
     drawString(fontRenderer, "Mod Hub · " + mods.size() + " mods", 10, 8, 0x96cd70);
     drawRect(8, 48, leftWidth + 12, listBottom, 0x99000000);
     drawRect(leftWidth + 18, 48, width - 8, listBottom, 0x99000000);
-    drawString(fontRenderer, "Nombre", 42, 51, 0xbbbbbb);
-    drawString(fontRenderer, "Tipo", Math.max(42, leftWidth - 97), 51, 0xbbbbbb);
+    drawString(fontRenderer, Messages.tr("modhub.name", "Nombre"), 42, 51, 0xbbbbbb);
+    drawString(
+        fontRenderer,
+        Messages.tr("modhub.type_6cc6198d", "Tipo"),
+        Math.max(42, leftWidth - 97),
+        51,
+        0xbbbbbb);
     search.drawTextBox();
     if (search.getText().isEmpty() && !search.isFocused())
-      drawString(fontRenderer, "Buscar mods...", 14, 28, 0x888888);
+      drawString(
+          fontRenderer,
+          Messages.tr("modhub.search_mods_e794ea64", "Buscar mods..."),
+          14,
+          28,
+          0x888888);
     int count = Math.max(1, (listBottom - listTop) / 40);
     for (int row = 0; row < count && listOffset + row < mods.size(); row++) {
       ModContainer mod = mods.get(listOffset + row);
@@ -210,12 +232,13 @@ public final class HubScreen extends GuiScreen {
           yy + 20,
           0xaaaaaa);
       ModClassification type = ModHub.classification(mod);
-      drawString(
-          fontRenderer,
-          fontRenderer.trimStringToWidth(type.label(), 100),
-          leftWidth - 97,
-          yy + 12,
-          type.type().color);
+      if (type.type().hasBadge())
+        drawString(
+            fontRenderer,
+            fontRenderer.trimStringToWidth(type.label(), 100),
+            leftWidth - 97,
+            yy + 12,
+            type.type().color);
     }
     if (listOffset > 0) drawString(fontRenderer, "↑", leftWidth, 51, 0xffffff);
     if (listOffset + count < mods.size())
@@ -228,12 +251,16 @@ public final class HubScreen extends GuiScreen {
       List<String> lines = new ArrayList<>();
       lines.addAll(fontRenderer.listFormattedStringToWidth(d.name(), dw));
       lines.add("");
-      lines.addAll(fontRenderer.listFormattedStringToWidth("Versión: " + d.version(), dw));
-      lines.addAll(fontRenderer.listFormattedStringToWidth("Autor: " + d.author(), dw));
+      lines.addAll(
+          fontRenderer.listFormattedStringToWidth(
+              Messages.tr("modhub.version_f3cde000", "Versión: ") + d.version(), dw));
+      lines.addAll(
+          fontRenderer.listFormattedStringToWidth(
+              Messages.tr("modhub.author_8c1505e7", "Autor: ") + d.author(), dw));
       lines.add("");
       lines.addAll(
           fontRenderer.listFormattedStringToWidth(
-              "Tipo: " + ModHub.classification(selected).label(), dw));
+              Messages.tr("modhub.type", "Tipo: ") + ModHub.classification(selected).label(), dw));
       lines.add("");
       lines.addAll(fontRenderer.listFormattedStringToWidth(d.description(), dw));
       lines.add("");

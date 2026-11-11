@@ -15,7 +15,7 @@ final class TypeOverrideScreen extends Screen {
   private String error;
 
   TypeOverrideScreen(ModHubScreen parent, ModRow row) {
-    super(Component.literal("Corregir tipo"));
+    super(Component.literal(Messages.tr("modhub.correct_type", "Corregir tipo")));
     this.parent = parent;
     this.row = row;
   }
@@ -29,7 +29,7 @@ final class TypeOverrideScreen extends Screen {
         new ModType[] {ModType.CLIENT, ModType.SERVER, ModType.BOTH, ModType.UNKNOWN}) {
       addRenderableWidget(
           ModHubScreen.vanillaButton(
-              x, y, buttonWidth, 20, Component.literal(type.label), button -> save(type)));
+              x, y, buttonWidth, 20, Component.literal(type.label()), button -> save(type)));
       y += 24;
     }
     addRenderableWidget(
@@ -38,11 +38,16 @@ final class TypeOverrideScreen extends Screen {
             y,
             buttonWidth,
             20,
-            Component.literal("Restablecer detección"),
+            Component.literal(Messages.tr("modhub.reset_detection", "Restablecer detección")),
             button -> save(null)));
     addRenderableWidget(
         ModHubScreen.vanillaButton(
-            x, y + 24, buttonWidth, 20, Component.literal("Volver"), button -> onClose()));
+            x,
+            y + 24,
+            buttonWidth,
+            20,
+            Component.literal(Messages.tr("modhub.back", "Volver")),
+            button -> onClose()));
   }
 
   private void save(ModType type) {
@@ -52,7 +57,10 @@ final class TypeOverrideScreen extends Screen {
     } catch (IOException | RuntimeException exception) {
       com.mojang.logging.LogUtils.getLogger()
           .warn("No se pudo guardar el tipo de {}", row.info().getModId(), exception);
-      error = "No se pudo guardar. Revisa los permisos de la carpeta config.";
+      error =
+          Messages.tr(
+              "modhub.could_not_save_check_the_config_folder_permissions",
+              "No se pudo guardar. Revisa los permisos de la carpeta config.");
     }
   }
 

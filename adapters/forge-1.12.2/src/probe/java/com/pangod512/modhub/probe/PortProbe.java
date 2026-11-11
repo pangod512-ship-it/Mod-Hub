@@ -23,8 +23,12 @@ import net.minecraftforge.fml.relauncher.Side;
 public final class PortProbe {
   private static int ticks, stage, checks;
   private static boolean done;
+  private static int languageIndex;
+  private static boolean languageRequested;
+  private static final String[] LANGUAGES = {"en_us", "es_mx", "fr_fr", "ja_jp", "en_us"};
   private static GuiScreen parent;
-  private static final Path OUTPUT = Paths.get("../build/port-probe");
+  private static final Path OUTPUT =
+      Paths.get(System.getProperty("modhub.legacyProbe.directory", "../build/port-probe"));
 
   private static Object field(Object object, String name) throws Exception {
     Field f = object.getClass().getDeclaredField(name);
@@ -35,6 +39,27 @@ public final class PortProbe {
   private static void check(boolean value, String name) {
     if (!value) throw new AssertionError(name);
     checks++;
+  }
+
+  private static boolean languageChecks(Minecraft mc) {
+    if (languageIndex == LANGUAGES.length) return true;
+    String locale = LANGUAGES[languageIndex];
+    if (!languageRequested) {
+      mc.gameSettings.language = locale;
+      mc.getLanguageManager().setCurrentLanguage(mc.getLanguageManager().getLanguage(locale));
+      languageRequested = true;
+      mc.refreshResources();
+      return false;
+    }
+    boolean spanish = locale.startsWith("es_");
+    check(mc.gameSettings.language.equals(locale), "Minecraft retains " + locale);
+    check(net.minecraft.client.resources.I18n.format("modhub.client").equals(spanish ? "Cliente" : "Client"), "Native fallback in " + locale + ": " + net.minecraft.client.resources.I18n.format("modhub.client"));
+    check(com.pangod512.modhub.core.ModType.CLIENT.label().equals(spanish ? "Cliente" : "Client"), "Client label in " + locale);
+    check(com.pangod512.modhub.core.ModType.SERVER.label().equals(spanish ? "Servidor" : "Server"), "Server label in " + locale);
+    check(!com.pangod512.modhub.core.ModType.UNKNOWN.hasBadge(), "Unknown has no badge in " + locale);
+    languageIndex++;
+    languageRequested = false;
+    return false;
   }
 
   @SubscribeEvent
@@ -53,6 +78,7 @@ public final class PortProbe {
           return;
         }
         if (!(mc.currentScreen instanceof GuiMainMenu)) return;
+        if (!languageChecks(mc)) return;
         mc.gameSettings.guiScale = 2;
         parent = mc.currentScreen;
         mc.displayGuiScreen(new GuiModList(parent));
@@ -134,13 +160,15 @@ public final class PortProbe {
 
   private static void finish(Minecraft mc, Throwable failure) {
     done = true;
+    String result = failure == null ? "PASSED: " + checks : "FAILED: " + failure;
+    Path report = OUTPUT.resolve("results.txt");
     try {
       Files.createDirectories(OUTPUT);
-      Files.write(
-          OUTPUT.resolve("results.txt"),
-          (failure == null ? "PASSED: " + checks : "FAILED: " + failure)
-              .getBytes(StandardCharsets.UTF_8));
-    } catch (Exception ignored) {
+      Files.write(report, result.getBytes(StandardCharsets.UTF_8));
+      System.out.println("Mod Hub validation " + result + " (" + report.toAbsolutePath() + ")");
+    } catch (Exception reportFailure) {
+      System.err.println("Cannot write Mod Hub validation report to " + report.toAbsolutePath());
+      reportFailure.printStackTrace();
     }
     if (failure != null) failure.printStackTrace();
     mc.shutdown();

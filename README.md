@@ -24,12 +24,14 @@ La familia **1.1.1 está disponible como releases estables** para cinco versione
 | 1.19.2 | 43.5.0 | 17 | Estable |
 | 1.20.1 | 47.4.10 | 17 | Estable |
 
-Los cinco JAR se probaron en modpacks antes de esta publicación. Fabric, NeoForge y Minecraft 1.21.1 no están incluidos.
+Los cinco JAR publicados son para Forge. La rama `main` también contiene el trabajo de idiomas y la ampliación a versiones más recientes de Forge y NeoForge. Esos cambios todavía no tienen una release. Consulta la [matriz de compilación y pruebas](adapters/modern-targets.json) para ver qué combinaciones se comprobaron.
 
 
 ## Descargas por versión de Minecraft
 
 Cada versión tiene su release estable y su JAR. Las pre-releases anteriores se conservan como historial.
+
+También puedes descargar Mod Hub 1.1.1 desde [CurseForge](https://www.curseforge.com/minecraft/mc-mods/mod-hub).
 
 - **1.12.2:** [Mod Hub 1.1.1 - 1.12.2](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.1-mc1.12.2-stable)
 - **1.16.5:** [Mod Hub 1.1.1 - 1.16.5](https://github.com/pangod512-ship-it/Mod-Hub/releases/tag/v1.1.1-mc1.16.5-stable)
@@ -57,7 +59,7 @@ Modrinth viene activado de forma predeterminada. Puedes desactivarlo en la confi
 
 Los ajustes y las correcciones se guardan en `config/modhub-settings.json` y `config/modhub-overrides.json` de cada instancia. Las cachés se separan por proveedor y contexto de Minecraft/cargador. Se conserva el formato de los ajustes y correcciones de 1.0.0.
 
-CurseForge **no está disponible como proveedor en estas versiones**. Su activación requiere acceso autorizado y verificar los datos explícitos de cliente/servidor de su API. No hay claves privadas incorporadas ni un servidor intermediario.
+CurseForge distribuye el mod. La identificación de mods dentro del juego utiliza Modrinth; la integración con la API de CurseForge sigue desactivada.
 
 ## Compilar
 
@@ -71,6 +73,13 @@ En Windows con PowerShell, instala JDK 8 y JDK 17 de Eclipse Temurin. El script 
 ```
 
 Las dependencias oficiales se descargan en la primera compilación. Los wrappers fijan Gradle y cada adaptación fija ForgeGradle, Forge y mappings. Los JAR quedan en `adapters/forge-<versión>/build/libs/`; el de 1.20.1, en `build/multiversion/1.20.1/libs/`.
+
+Para compilar un destino moderno de la matriz, usa `build-modern.ps1`. El script selecciona el módulo y el JDK adecuados; los destinos que lo requieren necesitan JDK 21.
+
+```powershell
+./tools/build-modern.ps1 -Minecraft '1.20.4' -Loader forge
+./tools/build-modern.ps1 -Minecraft '1.21.1' -Loader neoforge
+```
 
 En otros sistemas, usa el wrapper de la adaptación con el JDK adecuado: Gradle 4.9/Java 8 para 1.12.2; Gradle 7.3.3/Java 17 y toolchain Java 8 para 1.16.5; Gradle 8.8/Java 17 para 1.18.2, 1.19.2 y 1.20.1. El comando `runClient` abre una instancia de desarrollo aislada.
 

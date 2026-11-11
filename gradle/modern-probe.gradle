@@ -1,0 +1,137 @@
+def probeNeo = project.name == 'modhub-neoforge'
+def probeMc = findProperty('mcVersion') ?: (probeNeo ? '1.21.1' : '1.20')
+def probeLoader = findProperty('modLoader') ?: (probeNeo ? 'neoforge' : 'forge')
+def probeSources = layout.buildDirectory.dir('generated/probe')
+def probeResources = layout.buildDirectory.dir('generated/probe-resources')
+tasks.register('preparePortProbe') {
+    inputs.file(new File(projectDir, '../../gradle/modern-probe.gradle'))
+    inputs.properties minecraft: probeMc, loader: probeLoader
+    outputs.dirs probeSources, probeResources
+    doLast {
+        def entry = probeSources.get().file('com/pangod512/modhub/probe/ProbeEntry.java').asFile
+        entry.parentFile.mkdirs()
+        def modAnnotation = probeNeo ? 'net.neoforged.fml.common.Mod' : 'net.minecraftforge.fml.common.Mod'
+        def eventBus = probeNeo ? 'net.neoforged.neoforge.common.NeoForge' : 'net.minecraftforge.common.MinecraftForge'
+        def modernTicks = probeNeo && !(probeMc.startsWith('1.20.') && (probeMc.tokenize('.')[2] as int) < 5)
+        def renderEvent = modernTicks ? 'net.neoforged.neoforge.client.event.RenderFrameEvent.Post' :
+            (probeNeo ? 'net.neoforged.neoforge.event.TickEvent.RenderTickEvent' : 'net.minecraftforge.event.TickEvent.RenderTickEvent')
+        def action = modernTicks ? 'ModernProbe.onFrame();' :
+            "if (event.phase == ${probeNeo ? 'net.neoforged.neoforge' : 'net.minecraftforge'}.event.TickEvent.Phase.END) ModernProbe.onFrame();"
+        def typedForgeBus = probeLoader == 'forge' && probeMc.startsWith('1.21.') && (probeMc.tokenize('.')[2] as int) >= 6
+        def registration = typedForgeBus ? 'net.minecraftforge.event.TickEvent.RenderTickEvent.Post.BUS.addListener(event -> ModernProbe.onFrame());' :
+            "${eventBus}.EVENT_BUS.addListener((${renderEvent} event) -> { ${action} });"
+        entry.text = """package com.pangod512.modhub.probe;
+@${modAnnotation}("modhub_probe")
+public final class ProbeEntry {
+  public ProbeEntry() {
+    ${registration}
+  }
+}
+"""
+        def legacyNeo = probeNeo && probeMc.startsWith('1.20.') && (probeMc.tokenize('.')[2] as int) < 5
+        def metadata = probeResources.get().file(probeNeo && !legacyNeo ? 'META-INF/neoforge.mods.toml' : 'META-INF/mods.toml').asFile
+        metadata.parentFile.mkdirs()
+        metadata.text = '''modLoader="javafml"
+loaderVersion="[1,)"
+license="All Rights Reserved"
+[[mods]]
+modId="modhub_probe"
+version="1"
+displayName="Mod Hub private validation"
+'''
+        probeResources.get().file('pack.mcmeta').asFile.text = '{"pack":{"description":"Mod Hub private validation","pack_format":15,"supported_formats":[15,100],"min_format":15,"max_format":100}}'
+    }
+}
+sourceSets {
+    portProbe {
+        java.srcDirs = [file('../../adapters/probes/src/main/java'), probeSources]
+        resources.srcDirs = [probeResources]
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+    }
+}
+tasks.named('compilePortProbeJava') { dependsOn 'preparePortProbe' }
+tasks.named('processPortProbeResources') { dependsOn 'preparePortProbe' }
+if (!probeNeo && !project.hasProperty('forgeNext')) {
+    tasks.register('portProbeJar', Jar) {
+        from sourceSets.portProbe.output
+        archiveClassifier = "mc${probeMc}-private-probe"
+    }
+    reobf { portProbeJar {} }
+    tasks.named('portProbeJar') { finalizedBy 'reobfPortProbeJar' }
+}
+def output = layout.buildDirectory.file('runtime-probe/results.txt').get().asFile.absolutePath
+if (probeNeo) {
+    if (project.hasProperty('neoGradleLegacy')) {
+        sourceSets.portProbe.extensions.getByName('runs').modIdentifier('modhub_probe')
+        runs.client {
+            modSource sourceSets.portProbe
+            systemProperty 'modhub.probe.output', output
+            systemProperty 'modhub.probe.mc', probeMc
+            systemProperty 'modhub.probe.loader', probeLoader
+        }
+    } else {
+      neoForge.mods { modhub_probe { sourceSet sourceSets.portProbe } }
+      neoForge.runs.client {
+        systemProperty 'modhub.probe.output', output
+        systemProperty 'modhub.probe.mc', probeMc
+        systemProperty 'modhub.probe.loader', probeLoader
+      }
+    }
+} else if (project.hasProperty('forgeNext') || (probeLoader == 'forge' && !(probeMc in ['1.20', '1.20.1', '1.20.2']))) {
+    def probeBundle = layout.buildDirectory.dir('runtime-probe/bundle')
+    def prepareBundle = tasks.register('prepareProbeBundle', Sync) {
+        dependsOn 'classes', 'portProbeClasses'
+        from(sourceSets.main.output)
+        from(sourceSets.portProbe.output) {
+            exclude 'META-INF/**', 'pack.mcmeta'
+        }
+        into probeBundle
+        doLast {
+            def metadata = probeBundle.get().file('META-INF/mods.toml').asFile
+            def original = new File(sourceSets.main.output.resourcesDir, 'META-INF/mods.toml').getText('UTF-8')
+            metadata.setText(original + '\n[[mods]]\nmodId="modhub_probe"\nversion="1"\ndisplayName="Mod Hub private validation"\n', 'UTF-8')
+        }
+    }
+    if (project.hasProperty('forgeNext')) {
+        minecraft.runs.named('client') {
+            systemProperty 'modhub.probe.output', output
+            systemProperty 'modhub.probe.mc', probeMc
+            systemProperty 'modhub.probe.loader', probeLoader
+        }
+    } else {
+        def runtimeSources = sourceSets.create('probeRuntime')
+        runtimeSources.java.setSrcDirs([])
+        runtimeSources.resources.setSrcDirs([])
+        runtimeSources.output.classesDirs.setFrom([])
+        runtimeSources.output.resourcesDir = probeBundle.get().asFile
+        runtimeSources.output.dir([builtBy: prepareBundle], probeBundle)
+        def separateOutputs = (sourceSets.main.output.files + sourceSets.portProbe.output.files) as Set
+        runtimeSources.runtimeClasspath = files(probeBundle) + sourceSets.main.runtimeClasspath.filter { !separateOutputs.contains(it) }
+        minecraft.runs.client {
+            mods.clear()
+            setSources([runtimeSources])
+            property 'modhub.probe.output', output
+            property 'modhub.probe.mc', probeMc
+            property 'modhub.probe.loader', probeLoader
+        }
+    }
+    tasks.matching { it.name == 'runClient' }.configureEach {
+        dependsOn prepareBundle
+        doFirst {
+            def separateOutputs = (sourceSets.main.output.files + sourceSets.portProbe.output.files) as Set
+            classpath = files(probeBundle) + classpath.filter { !separateOutputs.contains(it) }
+            systemProperty 'modhub.probe.output', output
+            systemProperty 'modhub.probe.mc', probeMc
+            systemProperty 'modhub.probe.loader', probeLoader
+        }
+    }
+} else {
+    minecraft.runs.client {
+        property 'modhub.probe.output', output
+        property 'modhub.probe.mc', probeMc
+        property 'modhub.probe.loader', probeLoader
+        mods { modhub_probe { source sourceSets.portProbe } }
+    }
+}
+tasks.matching { it.name == 'runClient' }.configureEach { dependsOn 'portProbeClasses' }

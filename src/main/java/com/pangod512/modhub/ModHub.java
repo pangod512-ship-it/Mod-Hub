@@ -19,6 +19,7 @@ public final class ModHub {
   private void onClientSetup(FMLClientSetupEvent event) {
     event.enqueueWork(
         () -> {
+          Messages.install(key -> net.minecraft.client.resources.language.I18n.get(key));
           net.minecraftforge.fml.ModList.get()
               .getModContainerById(MOD_ID)
               .orElseThrow()

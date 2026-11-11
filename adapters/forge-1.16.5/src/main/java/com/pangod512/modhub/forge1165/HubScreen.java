@@ -78,8 +78,10 @@ public final class HubScreen extends Screen {
           width / 2 - 125,
           45,
           250,
-          "Consultar Modrinth: "
-              + (ClientBootstrap.identification.settings().enabled() ? "Sí" : "No"),
+          Messages.tr("modhub.query_modrinth", "Consultar Modrinth: ")
+              + (ClientBootstrap.identification.settings().enabled()
+                  ? Messages.tr("modhub.yes", "Sí")
+                  : Messages.tr("modhub.no", "No")),
           b -> {
             try {
               ClientBootstrap.identification
@@ -88,25 +90,35 @@ public final class HubScreen extends Screen {
               ClientBootstrap.identification.refresh();
               b.setMessage(
                   text(
-                      "Consultar Modrinth: "
-                          + (ClientBootstrap.identification.settings().enabled() ? "Sí" : "No")));
+                      Messages.tr("modhub.query_modrinth", "Consultar Modrinth: ")
+                          + (ClientBootstrap.identification.settings().enabled()
+                              ? Messages.tr("modhub.yes", "Sí")
+                              : Messages.tr("modhub.no", "No"))));
             } catch (java.io.IOException e) {
-              error = "No se pudo guardar.";
+              error = Messages.tr("modhub.could_not_save", "No se pudo guardar.");
             }
           });
-      button(width / 2 - 125, 75, 250, "CurseForge: no disponible", b -> {}).active =
-          CurseForgeAccess.available();
-      button(width / 2 - 100, height - 28, 200, "Volver", b -> onClose());
+      button(
+          width / 2 - 100, height - 28, 200, Messages.tr("modhub.back", "Volver"), b -> onClose());
       return;
     }
-    search = new TextFieldWidget(font, 10, 22, Math.max(30, left - 112), 20, text("Buscar mods"));
+    search =
+        new TextFieldWidget(
+            font,
+            10,
+            22,
+            Math.max(30, left - 112),
+            20,
+            text(Messages.tr("modhub.search_mods", "Buscar mods")));
     search.setMaxLength(160);
-    search.setSuggestion(query.isEmpty()?"Buscar mods...":null);
+    search.setSuggestion(
+        query.isEmpty() ? Messages.tr("modhub.search_mods_e794ea64", "Buscar mods...") : null);
     search.setValue(query);
     search.setResponder(
         s -> {
           query = s;
-          search.setSuggestion(s.isEmpty()?"Buscar mods...":null);
+          search.setSuggestion(
+              s.isEmpty() ? Messages.tr("modhub.search_mods_e794ea64", "Buscar mods...") : null);
           offset = 0;
           refresh();
         });
@@ -115,10 +127,10 @@ public final class HubScreen extends Screen {
         left - 96,
         22,
         106,
-        "Tipo: " + filter.label,
+        Messages.tr("modhub.type", "Tipo: ") + filter.label(),
         b -> {
           filter = ModType.values()[(filter.ordinal() + 1) % ModType.values().length];
-          b.setMessage(text("Tipo: " + filter.label));
+          b.setMessage(text(Messages.tr("modhub.type", "Tipo: ") + filter.label()));
           offset = 0;
           refresh();
         });
@@ -127,13 +139,13 @@ public final class HubScreen extends Screen {
         10,
         height - 27,
         w,
-        "Abrir carpeta de mods",
+        Messages.tr("modhub.open_mods_folder", "Abrir carpeta de mods"),
         b -> {
           try {
             java.awt.Desktop.getDesktop()
                 .open(net.minecraftforge.fml.loading.FMLPaths.MODSDIR.get().toFile());
           } catch (Exception e) {
-            error = "No se pudo abrir la carpeta.";
+            error = Messages.tr("modhub.could_not_open_the_folder", "No se pudo abrir la carpeta.");
           }
         });
     configure =
@@ -141,22 +153,25 @@ public final class HubScreen extends Screen {
             20 + w,
             height - 27,
             w,
-            "Configurar",
+            Messages.tr("modhub.configure", "Configurar"),
             b -> {
               if (selected != null)
                 try {
                   ClientBootstrap.config(selected)
                       .ifPresent(f -> minecraft.setScreen(f.apply(minecraft, this)));
                 } catch (RuntimeException e) {
-                  error = "No se pudo abrir la configuración.";
+                  error =
+                      Messages.tr(
+                          "modhub.could_not_open_the_settings",
+                          "No se pudo abrir la configuración.");
                 }
             });
-    button(width - w - 10, height - 27, w, "Volver", b -> onClose());
+    button(width - w - 10, height - 27, w, Messages.tr("modhub.back", "Volver"), b -> onClose());
     button(
         left + 20,
         bottom - 22,
         Math.max(40, width - left - 30),
-        "Corregir tipo",
+        Messages.tr("modhub.correct_type", "Corregir tipo"),
         b -> {
           if (selected != null) choosingType = !choosingType;
         });
@@ -217,7 +232,7 @@ public final class HubScreen extends Screen {
           choosingType = false;
           refresh();
         } catch (java.io.IOException e) {
-          error = "No se pudo guardar.";
+          error = Messages.tr("modhub.could_not_save", "No se pudo guardar.");
         }
         return true;
       }
@@ -257,13 +272,21 @@ public final class HubScreen extends Screen {
     if (minecraft.level == null) renderBackground(pose);
     if (options) {
       fill(pose, 0, 0, width, height, 0x99101416);
-      drawCenteredString(pose, font, "Configuración de Mod Hub", width / 2, 15, 0x96cd70);
+      drawCenteredString(
+          pose,
+          font,
+          Messages.tr("modhub.mod_hub_settings", "Configuración de Mod Hub"),
+          width / 2,
+          15,
+          0x96cd70);
       int yy = 110;
       for (net.minecraft.util.IReorderingProcessor formatted :
           font.split(
               text(
-                  "Identificación en segundo plano y caché sin conexión. "
-                      + CurseForgeAccess.reason()
+                  Messages.tr(
+                          "modhub.background_identification_and_offline_cache",
+                          "Identificación en segundo plano y caché sin conexión. ")
+                      + ClientBootstrap.identification.snapshot().status()
                       + " "
                       + error),
               Math.max(40, width - 40))) {
@@ -277,8 +300,8 @@ public final class HubScreen extends Screen {
     line(pose, "Mod Hub · " + visible.size() + " mods", 10, 8, 0x96cd70);
     fill(pose, 8, 48, left + 12, bottom, 0x99000000);
     fill(pose, left + 18, 48, width - 8, bottom, 0x99000000);
-    line(pose, "Nombre", 42, 51, 0xbbbbbb);
-    line(pose, "Tipo", left - 97, 51, 0xbbbbbb);
+    line(pose, Messages.tr("modhub.name", "Nombre"), 42, 51, 0xbbbbbb);
+    line(pose, Messages.tr("modhub.type_6cc6198d", "Tipo"), left - 97, 51, 0xbbbbbb);
     int count = Math.max(1, (bottom - 64) / 40);
     for (int i = 0; i < count && offset + i < visible.size(); i++) {
       IModInfo mod = visible.get(offset + i);
@@ -297,7 +320,8 @@ public final class HubScreen extends Screen {
       line(pose, clip(d.name(), left - 150), 44, yy + 5, 0xffffff);
       line(pose, clip(d.version() + " · " + d.author(), left - 150), 44, yy + 20, 0xaaaaaa);
       ModClassification type = ClientBootstrap.classification(mod);
-      line(pose, clip(type.label(), 100), left - 97, yy + 12, type.type().color);
+      if (type.type().hasBadge())
+        line(pose, clip(type.label(), 100), left - 97, yy + 12, type.type().color);
     }
     if (!query.isEmpty() || filter != ModType.ALL)
       line(pose, visible.size() + " mods", 10, bottom + 3, 0x96cd70);
@@ -306,18 +330,25 @@ public final class HubScreen extends Screen {
       if (choosingType) {
         for (ModType t : ModType.values()) {
           fill(pose, dx, yy, width - 12, yy + 19, 0xff353c32);
-          line(pose, t == ModType.ALL ? "Detección automática" : t.label, dx + 4, yy + 5, 0xeeeeee);
+          line(
+              pose,
+              t == ModType.ALL
+                  ? Messages.tr("modhub.automatic_detection", "Detección automática")
+                  : t.label(),
+              dx + 4,
+              yy + 5,
+              0xeeeeee);
           yy += 22;
         }
       } else {
         ModDescriptor d = ClientBootstrap.descriptor(selected);
         String detail =
             d.name()
-                + "\n\nVersión: "
+                + Messages.tr("modhub.version_e527407e", "\n\nVersión: ")
                 + d.version()
-                + "\nAutor: "
+                + Messages.tr("modhub.author_f5165c58", "\nAutor: ")
                 + d.author()
-                + "\n\nTipo: "
+                + Messages.tr("modhub.type_0199be60", "\n\nTipo: ")
                 + ClientBootstrap.classification(selected).label()
                 + "\n\n"
                 + d.description()

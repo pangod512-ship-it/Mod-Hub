@@ -1,0 +1,43 @@
+buildscript {
+    repositories { maven { url = 'https://maven.minecraftforge.net/' }; mavenCentral() }
+    dependencies { classpath 'net.minecraftforge.gradle:ForgeGradle:6.0.54' }
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply from: '../../gradle/modern-sources.gradle'
+apply from: '../../gradle/forge-events.gradle'
+
+def workspace = file('../..')
+def mc = findProperty('mcVersion') ?: '1.20'
+def loader = findProperty('modLoader') ?: 'forge'
+def catalog = new groovy.json.JsonSlurper().parse(file('../modern-targets.json'))
+def target = catalog.find { it.minecraft == mc }
+if (target == null || !(loader in ['forge', 'neoforge']) || !target[loader]) {
+    throw new GradleException("No official ${loader} artifact for Minecraft ${mc}")
+}
+if (loader == 'neoforge' && mc != '1.20.1') {
+    throw new GradleException('NeoForge 1.20.2+ requires the NeoGradle adaptation; this ForgeGradle project supports the legacy NeoForge 1.20.1 artifact only.')
+}
+
+version = '1.1.1'
+group = 'com.pangod512.modhub'
+base { archivesName = 'modhub' }
+layout.buildDirectory.set(file("build/${mc}-${loader}"))
+java.toolchain.languageVersion = JavaLanguageVersion.of(target.java as int)
+repositories { mavenCentral(); maven { url = 'https://maven.neoforged.net/releases/' } }
+minecraft {
+    mappings channel: 'official', version: mc
+    runs {
+        client {
+            workingDirectory file("run/${mc}-${loader}")
+            property 'forge.logging.console.level', 'info'
+            mods { modhub { source sourceSets.main } }
+        }
+    }
+}
+dependencies {
+    minecraft "${loader == 'forge' ? 'net.minecraftforge' : 'net.neoforged'}:forge:${target[loader]}"
+}
+
+apply from: '../../gradle/forge-common.gradle'
+
+if (project.hasProperty('portProbe')) apply from: '../../gradle/modern-probe.gradle'
